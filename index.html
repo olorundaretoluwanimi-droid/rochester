@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>What Happened to Rochester?</title>
+<style>
+@font-face{font-family:Sans;src:url(fonts/sans400.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Sans;src:url(fonts/sans500.woff2) format('woff2');font-weight:500}
+@font-face{font-family:Sans;src:url(fonts/sans700.woff2) format('woff2');font-weight:700}
+@font-face{font-family:Mono;src:url(fonts/mono400.woff2) format('woff2');font-weight:400}
+@font-face{font-family:Mono;src:url(fonts/mono600.woff2) format('woff2');font-weight:600}
+@font-face{font-family:SerifI;src:url(fonts/serifi.woff2) format('woff2');font-style:italic;font-weight:400}
+html,body{margin:0;background:#15110D;overflow:hidden}canvas{display:block}
+</style></head><body><canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// "What Happened to Rochester? The City Kodak Built" — the series' dark warm look (ground #15110D, IBM Plex, Source Serif italic quotes,
+// red only for dates and numbers, 47 px captions, mono source tags with a chip) with this episode's motion graphics, built from film:
+// a rewind card with a film strip and an exposure counter between frames, pictures riding on a 35 mm strip, and an archive layer that
+// ages as the story rewinds (modern colour → slide colour → faded colour → silver → albumen, with grain, dust, weave and flicker).
+// render(t) is deterministic.
+const W = 1920, H = 1080, cv = document.getElementById('c'), x = cv.getContext('2d');
+const C = { bg: '#15110D', panel: '#221C16', line: '#3B3229', paper: '#EADFC6', ink: '#2A2118', ink2: '#5a4b3a', red: '#E5512F', cream: '#F1E7D3',
+            dim: '#AE9F86', faint: '#62564A', base: '#0e0a07', edge: '#C98A3A', kc: '#F2B61C' };
+let FILM = { scenes: [], subs: [], dur: 10 }, MAP = null, SIZES = {}, CLIPN = {}, SPECK, GRAIN = [], ERA = 'm', ERAN = 10, NOW = 0;
+const IM = {}, CLIP = {};
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => clamp((t - a) / (b - a)), lerp = (a, b, k) => a + (b - a) * k;
+const eo = k => 1 - Math.pow(1 - k, 3), ei = k => k * k * k, eio = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const eback = k => { const c = 1.6; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+function rnd(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function load(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => { console.warn('missing', src); r(null); }; i.src = src; }); }
+const AT = (s, v) => v == null ? s.t0 + .4 : v < 0 ? s.t0 + (-v) * (s.vd || (s.t1 - s.t0)) : s.t0 + v;   // seconds after t0, or (negative) a fraction of the line
+const LK = (t, s) => seg(t, s.t0, s.t1);
+function mk(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function makeSpeck() { const c = mk(512, 512), g = c.getContext('2d'), R = rnd(23); for (let i = 0; i < 2600; i++) { g.fillStyle = `rgba(0,0,0,${R() * .9})`; g.beginPath(); g.arc(R() * 512, R() * 512, R() * 2.2, 0, 7); g.fill(); } return c; }
+function makeGrain() { for (let k = 0; k < 6; k++) { const c = mk(256, 256), g = c.getContext('2d'), d = g.createImageData(256, 256), R = rnd(100 + k);
+  for (let i = 0; i < d.data.length; i += 4) { const n = 128 + (R() + R() + R() + R() - 2) * 70; d.data[i] = d.data[i + 1] = d.data[i + 2] = n; d.data[i + 3] = 255; } g.putImageData(d, 0, 0); GRAIN.push(g.createPattern(c, 'repeat')); } }
+
+// ── type ─────────────────────────────────────────────────────────────────────────────────────────────────
+function fontOf(o, size) {
+  const fam = o.f === 'Mono' ? 'Mono' : 'Sans', s = size || o.s || 30;
+  if (o.it) return `italic 400 ${s}px SerifI`;
+  let w = o.w || 400; w = fam === 'Mono' ? (w >= 500 ? 600 : 400) : (w >= 650 ? 700 : w >= 450 ? 500 : 400);
+  return `${w} ${s}px ${fam}`;
+}
+let REC = null;
+function txt(s, X, Y, o = {}) {
+  x.save(); x.globalAlpha *= o.a ?? 1; x.font = fontOf(o); x.fillStyle = o.c || C.cream;
+  x.textAlign = o.al || 'left'; x.textBaseline = o.bl || 'alphabetic'; if (o.ls) x.letterSpacing = o.ls + 'px';
+  if (o.sh) { x.shadowColor = o.sh; x.shadowBlur = o.sb ?? 10; }
+  x.fillText(s, X, Y); const m = x.measureText(s).width; x.restore();
+  if (o.id && REC && (o.a ?? 1) > .5) { const x0 = o.al === 'center' ? X - m / 2 : o.al === 'right' ? X - m : X; REC.push({ id: o.id, text: s, x0, y0: Y - (o.s || 30), x1: x0 + m, y1: Y }); }
+  return m;
+}
+function measure(s, o) { x.save(); x.font = fontOf(o); if (o.ls) x.letterSpacing = o.ls + 'px'; const m = x.measureText(s).width; x.restore(); return m; }
+function rr(X, Y, w, h, r) { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); }
+function hair(a, b, c, d, col = C.line, lw = 1.5) { x.strokeStyle = col; x.lineWidth = lw; x.beginPath(); x.moveTo(a, b); x.lineTo(c, d); x.stroke(); }
+function shade(X, Y, w, h, a = .85) { x.save(); x.globalAlpha *= a; x.fillStyle = C.bg; x.fillRect(X, Y, w, h); x.restore(); }
+function drop(s, X, Y, t, t0, o = {}) {   // type that drops in letter by letter (ease-back) — Plex Sans bold
+  o = Object.assign({ w: 700 }, o); const fs = o.s || 90, al = o.al || 'left', st = o.st ?? .03, wd = measure(s, o); let cx = al === 'center' ? X - wd / 2 : al === 'right' ? X - wd : X;
+  x.save(); x.font = fontOf(o); if (o.ls) x.letterSpacing = o.ls + 'px'; x.fillStyle = o.c || C.cream; x.textBaseline = 'alphabetic';
+  if (o.sh) { x.shadowColor = o.sh; x.shadowBlur = 16; }
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i], cw = x.measureText(ch).width + (o.ls || 0), k = seg(t, t0 + i * st, t0 + i * st + .26);
+    if (k > 0) { const e = eback(k); x.save(); x.globalAlpha *= clamp(k * 3) * (o.a ?? 1); x.translate(cx + cw / 2, Y - fs * .5 * (1 - e)); x.fillText(ch, -cw / 2 + (o.ls || 0) / 2, 0); x.restore(); }
+    cx += cw;
+  }
+  x.restore(); const x0 = al === 'center' ? X - wd / 2 : al === 'right' ? X - wd : X;
+  if (o.id && REC && seg(t, t0 + s.length * st, t0 + s.length * st + .3) >= 1) REC.push({ id: o.id, text: s, x0, y0: Y - fs, x1: x0 + wd, y1: Y });
+  return wd;
+}
+function stamp(s, X, Y, t, t0, o = {}) {   // a red stamp for dates and numbers (Plex Mono), lands from 1.5× in 0.14 s
+  const k = seg(t, t0, t0 + .14); if (k <= 0) return; const fs = o.s || 96, sc = lerp(1.5, 1, eo(k)), wd = measure(s, { s: fs, f: 'Mono', w: 600 });
+  const c = mk(Math.ceil(wd + 60), Math.ceil(fs * 1.5)), g = c.getContext('2d');
+  g.font = `600 ${fs}px Mono`; g.fillStyle = o.c || C.red; g.textBaseline = 'middle'; g.fillText(s, 30, c.height / 2 + fs * .04);
+  if (o.box !== false) { g.strokeStyle = o.c || C.red; g.lineWidth = Math.max(2, fs * .05); g.strokeRect(10, 6, c.width - 20, c.height - 12); }
+  g.globalCompositeOperation = 'destination-out'; g.globalAlpha = .35; g.drawImage(SPECK, (o.seed || 0) * 37 % 200, 0, c.width, c.height, 0, 0, c.width, c.height);
+  x.save(); x.translate(X, Y); x.rotate((o.rot ?? -4) * Math.PI / 180); x.scale(sc, sc); x.globalAlpha *= k * (o.a ?? .95);
+  x.drawImage(c, -c.width / 2, -c.height / 2); x.restore();
+  if (o.id && REC) REC.push({ id: o.id, text: s, x0: X - wd / 2, y0: Y - fs / 2, x1: X + wd / 2, y1: Y + fs / 2 });
+}
+function typed(s, X, Y, t, t0, dur, o = {}) {   // Plex Mono typed with a block cursor
+  const fs = o.s || 40, k = seg(t, t0, t0 + dur); if (k <= 0) return; const n = Math.round(s.length * k), part = s.slice(0, n);
+  const w = txt(part, X, Y, { s: fs, f: 'Mono', w: o.w || 600, c: o.c || C.cream, al: o.al, ls: o.ls });
+  if (k < 1 && Math.floor(t * 4) % 2 === 0) { x.save(); x.fillStyle = o.c || C.cream; x.fillRect((o.al === 'center' ? X + w / 2 : X + w) + 4, Y - fs * .78, fs * .5, fs * .9); x.restore(); }
+  if (o.id && REC && k >= 1) REC.push({ id: o.id, text: s, x0: X, y0: Y - fs, x1: X + w, y1: Y });
+}
+const num = (v, d = 0) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+function paperCard(X, Y, w, h, t = 0) { x.fillStyle = C.paper; x.fillRect(X, Y, w, h); x.save(); x.globalAlpha = .1; x.globalCompositeOperation = 'multiply'; x.fillStyle = GRAIN[Math.floor(t * 30) % 6]; x.fillRect(X, Y, w, h); x.restore();
+  x.strokeStyle = '#c9bb9c'; x.lineWidth = 1; x.strokeRect(X + .5, Y + .5, w - 1, h - 1); }
+function srcTag(s, X, Y, a = 1, id) { if (!s) return; x.save(); x.globalAlpha *= a; x.fillStyle = C.cream; x.fillRect(X, Y - 12, 6, 13); txt(s, X + 14, Y, { s: 17, f: 'Mono', w: 600, ls: 1, c: C.cream, id }); x.restore(); }
+function capPill(s, X, Y, a = 1) {
+  const lines = String(s).split('\n').map(l => l.toUpperCase()), fs = 19, wd = Math.max(...lines.map(l => measure(l, { s: fs, f: 'Mono', w: 600, ls: 1 }))) + 36, ht = lines.length * 27 + 18;
+  x.save(); x.globalAlpha *= a; shade(X, Y - ht, wd, ht, .82); x.fillStyle = C.red; x.fillRect(X, Y - ht, 4, ht);
+  lines.forEach((l, i) => txt(l, X + 20, Y - ht + 30 + i * 27, { s: fs, f: 'Mono', w: 600, ls: 1, c: C.cream })); x.restore();
+}
+function ground() { x.fillStyle = C.bg; x.fillRect(0, 0, W, H); }
+
+// ── the archive layer: grade per era, grain, dust, gate weave, flicker ─────────────────────────────────────
+const ERAS = { m: { f: 'saturate(.9) contrast(1.04)', g: .07, d: 0, w: 0, fl: 0 }, s: { f: 'saturate(1.12) contrast(1.07) sepia(.12)', g: .11, d: .15, w: 0, fl: .01 },
+  c: { f: 'sepia(.34) saturate(.82) contrast(1.02) brightness(1.01)', g: .15, d: .35, w: .6, fl: .02 }, b: { f: 'grayscale(1) contrast(1.12) brightness(.96)', g: .2, d: .6, w: 1.1, fl: .035 },
+  a: { f: 'grayscale(1) sepia(.72) contrast(1.06) brightness(.95)', g: .24, d: .8, w: 1.5, fl: .055 }, line: { f: 'none', g: 0, d: 0, w: 0, fl: 0 } };
+const eraOf = n => n === 0 || n >= 8 ? 'm' : n >= 6 ? 's' : n >= 4 ? 'c' : n >= 2 ? 'b' : 'a';
+function weave() { const e = ERAS[ERA], f = Math.floor(NOW * 24); return [Math.sin(f * 1.7) * e.w, Math.cos(f * 2.3) * e.w * .7]; }
+function dust(X, Y, w, h, amt) {
+  if (amt <= 0) return; const R = rnd(Math.floor(NOW * 24) * 7 + 1); x.save(); x.beginPath(); x.rect(X, Y, w, h); x.clip();
+  const n = Math.floor(amt * 7 * (w * h) / 1.6e6); x.fillStyle = 'rgba(10,8,6,.75)';
+  for (let i = 0; i < n; i++) { const px = X + R() * w, py = Y + R() * h, r = .6 + R() * 2.2; x.beginPath(); x.ellipse(px, py, r, r * (.4 + R()), R() * 3, 0, 7); x.fill(); }
+  if (R() < amt * .5) { x.strokeStyle = `rgba(230,220,200,${.12 + R() * .15})`; x.lineWidth = 1; const sx = X + R() * w; x.beginPath(); x.moveTo(sx, Y); x.lineTo(sx + (R() - .5) * 8, Y + h); x.stroke(); }
+  x.restore();
+}
+function cover(img, X, Y, w, h, o = {}) {
+  if (!img) { x.fillStyle = '#000'; x.fillRect(X, Y, w, h); return; }
+  const e = ERAS[o.grade || ERA] || ERAS.m, [wx, wy] = o.still ? [0, 0] : weave();
+  const z = o.z || 1, s = Math.max(w / img.width, h / img.height) * z, sw = w / s, sh = h / s;
+  const sx = clamp((img.width - sw) * (o.fx ?? .5) + wx / s, 0, img.width - sw), sy = clamp((img.height - sh) * (o.fy ?? .5) + wy / s, 0, img.height - sh);
+  x.save(); x.fillStyle = '#000'; x.fillRect(X, Y, w, h); x.filter = e.f + (e.fl ? ` brightness(${1 + Math.sin(NOW * 53) * e.fl})` : '');
+  x.drawImage(img, sx, sy, sw, sh, X, Y, w, h); x.filter = 'none';
+  if (e.g) { x.globalCompositeOperation = 'overlay'; x.globalAlpha = e.g; x.fillStyle = GRAIN[Math.floor(NOW * 30) % 6]; x.fillRect(X, Y, w, h); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; }
+  const v = x.createRadialGradient(X + w / 2, Y + h / 2, Math.min(w, h) * .35, X + w / 2, Y + h / 2, Math.max(w, h) * .75);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, `rgba(0,0,0,${.18 + e.g})`); x.fillStyle = v; x.fillRect(X, Y, w, h);
+  x.restore(); dust(X, Y, w, h, e.d);
+}
+function plate(img, X, Y, w, h, o = {}) {   // a picture with hard edge, white flash on cut-in, caption pill
+  x.save(); x.globalAlpha *= o.a ?? 1; cover(img, X, Y, w, h, o);
+  if (o.flash > 0) { x.save(); x.globalAlpha *= o.flash * .85; x.fillStyle = '#fff'; x.fillRect(X, Y, w, h); x.restore(); }
+  x.strokeStyle = C.line; x.lineWidth = 1; x.strokeRect(X + .5, Y + .5, w - 1, h - 1);
+  if (o.cap) capPill(o.cap, X + 18, Y + h - 18, o.capA ?? 1);
+  x.restore();
+}
+const TINT = new Map();
+function tinted(img, col) { const k = img._n + col; if (TINT.has(k)) return TINT.get(k); const c = mk(img.width, img.height), g = c.getContext('2d');
+  g.drawImage(img, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = col; g.fillRect(0, 0, c.width, c.height); TINT.set(k, c); return c; }
+function inkArt(img, X, Y, w, o = {}) {   // a line drawing (patent, cutaway) as cream lines on the dark ground; o.reveal 0..1 draws it top to bottom
+  if (!img) return; const h = w * img.height / img.width, k = o.reveal ?? 1; if (k <= 0) return;
+  x.save(); x.globalAlpha *= o.a ?? 1; x.beginPath(); x.rect(X - 4, Y - 4, w + 8, (h + 8) * k); x.clip(); x.drawImage(tinted(img, o.col || '#E6D7B8'), X, Y, w, h); x.restore();
+  if (k > 0 && k < 1) { const yy = Y + h * k; const g = x.createLinearGradient(0, yy - 30, 0, yy + 4); g.addColorStop(0, 'rgba(229,81,47,0)'); g.addColorStop(1, 'rgba(229,81,47,.55)');
+    x.fillStyle = g; x.fillRect(X - 20, yy - 30, w + 40, 34); hair(X - 20, yy, X + w + 20, yy, C.red, 2); }
+  return h;
+}
+
+// ── 35 mm film strip ────────────────────────────────────────────────────────────────────────────────────
+const FW = 1160, FH = 774, PERF = 66, FGAP = 52;
+function stripBand(X0, Y, len, o = {}) {   // film base with sprocket holes and edge print, from X0 for len pixels (frames at FW+FGAP pitch)
+  const pitch = FW + FGAP, top = Y - PERF, bot = Y + FH;
+  x.save(); x.globalAlpha *= o.a ?? 1; x.fillStyle = C.base; x.fillRect(X0, top, len, FH + 2 * PERF);
+  const g = x.createLinearGradient(0, top, 0, bot + PERF); g.addColorStop(0, 'rgba(120,70,20,.16)'); g.addColorStop(.5, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(120,70,20,.16)'); x.fillStyle = g; x.fillRect(X0, top, len, FH + 2 * PERF);
+  const hp = pitch / 8, ph0 = ((o.phase || 0) % hp + hp) % hp; x.fillStyle = C.bg;
+  for (let px = X0 - hp + ph0; px < X0 + len; px += hp) { rr(px + hp * .28, top + 18, hp * .44, 30, 6); x.fill(); rr(px + hp * .28, bot + 18, hp * .44, 30, 6); x.fill(); }
+  x.restore();
+}
+function edgeText(s, X, Y, a = .75) { txt(s, X, Y, { s: 15, f: 'Mono', w: 600, ls: 2, c: C.edge, a }); }
+function filmFrame(img, X, Y, o = {}) {   // one 35 mm frame (picture area FW×FH) with its edge marks
+  if (img === 'blank') { x.fillStyle = '#060504'; x.fillRect(X, Y, FW, FH); }
+  else if (img && img.n === 'clip') clipFrame(img.c, X, Y, FW, FH, o.l || 0, o);
+  else cover(IM[img], X, Y, FW, FH, o);
+  if (o.flash > 0) { x.save(); x.globalAlpha = o.flash * .8; x.fillStyle = '#fff'; x.fillRect(X, Y, FW, FH); x.restore(); }
+  if (o.edge) { edgeText(o.edge, X + 12, Y - PERF + 12); edgeText('▸ ' + (o.no ?? ''), X + FW - 90, Y + FH + PERF - 6); }
+}
+
+// ── film clips (1963 city film, tower time-lapse): 12 fps frame sequences ────────────────────────────────
+function clipFrame(c, X, Y, w, h, l, o = {}) {
+  const fr = CLIP[c]; if (!fr || !fr.length) { x.fillStyle = '#000'; x.fillRect(X, Y, w, h); return; }
+  const n = fr.length; let i = Math.floor(l * 12); i = o.rev ? (n - 1 - (i % n)) : (Math.floor(i / n) % 2 ? n - 1 - i % n : i % n);
+  cover(fr[clamp(i, 0, n - 1)], X, Y, w, h, o);
+}
+
+// ── camera ──────────────────────────────────────────────────────────────────────────────────────────────
+function camAt(s, t) {
+  const K = s.cam || [[0, W / 2, H / 2, 1, 0]], l = t - s.t0; let i = 0; while (i < K.length - 1 && K[i + 1][0] <= l) i++;
+  const a = K[i], b = K[Math.min(i + 1, K.length - 1)], k = b === a ? 0 : eio(seg(l, a[0], b[0]));
+  return { x: lerp(a[1], b[1], k), y: lerp(a[2], b[2], k), z: lerp(a[3], b[3], k), r: lerp(a[4] || 0, b[4] || 0, k) };
+}
+function withCam(c, fn) { x.save(); x.translate(W / 2, H / 2); x.rotate(c.r * Math.PI / 180); x.scale(c.z, c.z); x.translate(-c.x, -c.y); fn(); x.restore(); }
+
+// ── map (Natural Earth, schematic, no borders) ──────────────────────────────────────────────────────────
+function mapDraw(X, Y, w, o = {}) {
+  if (!MAP) return; const s = w / MAP.W, P = p => [X + p[0] * s, Y + p[1] * s];
+  x.save(); x.fillStyle = '#3a3026'; x.strokeStyle = '#9a8266'; x.lineWidth = 1.2 / (o.z || 1);
+  for (const r of MAP.land) { x.beginPath(); r.forEach((p, i) => { const [a, b] = P(p); i ? x.lineTo(a, b) : x.moveTo(a, b); }); x.closePath(); x.fill(); x.stroke(); }
+  x.fillStyle = C.bg; for (const r of MAP.lakes) { x.beginPath(); r.forEach((p, i) => { const [a, b] = P(p); i ? x.lineTo(a, b) : x.moveTo(a, b); }); x.closePath(); x.fill(); x.stroke(); }
+  if (o.rails) { x.strokeStyle = 'rgba(170,140,105,.25)'; x.lineWidth = .8 / (o.z || 1); for (const r of MAP.rail) { x.beginPath(); r.forEach((p, i) => { const [a, b] = P(p); i ? x.lineTo(a, b) : x.moveTo(a, b); }); x.stroke(); } }
+  x.restore(); return { s, P: name => P(MAP.towns[name]) };
+}
+function arcPath(A, B, bend = .22) { const mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2, dx = B[0] - A[0], dy = B[1] - A[1], cx = mx - dy * bend, cy = my + dx * bend;
+  return u => [(1 - u) * (1 - u) * A[0] + 2 * (1 - u) * u * cx + u * u * B[0], (1 - u) * (1 - u) * A[1] + 2 * (1 - u) * u * cy + u * u * B[1]]; }
+function route(A, B, k, o = {}) {
+  if (k <= 0) return; const Q = arcPath(A, B, o.bend ?? .22);
+  x.save(); x.strokeStyle = o.c || C.red; x.lineWidth = o.lw || 3; x.setLineDash(o.dash || [10, 7]); x.beginPath();
+  for (let u = 0; u <= k + 1e-6; u += .02) { const [a, b] = Q(Math.min(u, k)); u ? x.lineTo(a, b) : x.moveTo(a, b); } x.stroke(); x.setLineDash([]); x.restore();
+  if (o.head && k < 1) { const [a, b] = Q(k); o.head(a, b); }
+}
+function town(p, name, o = {}) { x.save(); x.globalAlpha *= o.a ?? 1; x.fillStyle = o.c || C.red; x.beginPath(); x.arc(p[0], p[1], o.r || 8, 0, 7); x.fill();
+  x.strokeStyle = C.cream; x.lineWidth = 1.5; x.stroke(); if (name) txt(name, p[0] + (o.dx ?? 16), p[1] + (o.dy ?? 9), { s: o.s || 30, w: 500, c: C.cream, al: o.al || 'left', id: o.id, sh: 'rgba(0,0,0,.8)' }); x.restore(); }
+function canister(X, Y, r, rot = 0, a = 1) {   // a yellow 35 mm film canister, seen from the side (no brand)
+  x.save(); x.translate(X, Y); x.rotate(rot); x.globalAlpha *= a; x.fillStyle = C.kc; rr(-r * .55, -r, r * 1.1, r * 2, r * .18); x.fill();
+  x.fillStyle = '#1b1510'; x.fillRect(-r * .6, -r * 1.06, r * 1.2, r * .22); x.fillRect(-r * .6, r * .84, r * 1.2, r * .22); x.fillStyle = '#C8301E'; x.fillRect(-r * .55, -r * .25, r * 1.1, r * .5); x.restore(); }
+function parcel(X, Y, r) { x.save(); x.translate(X, Y); x.rotate(-.12); x.fillStyle = '#B48A55'; x.strokeStyle = C.ink; x.lineWidth = 1.5; x.fillRect(-r, -r * .7, 2 * r, 1.4 * r); x.strokeRect(-r, -r * .7, 2 * r, 1.4 * r);
+  x.strokeStyle = '#6b3a1e'; x.beginPath(); x.moveTo(0, -r * .7); x.lineTo(0, r * .7); x.moveTo(-r, 0); x.lineTo(r, 0); x.stroke(); x.restore(); }
+
+// ── captions ────────────────────────────────────────────────────────────────────────────────────────────
+function subs(t) { const s = FILM.subs.find(q => t >= q.t0 && t < q.t1); if (!s) return;
+  x.save(); x.shadowColor = 'rgba(0,0,0,1)'; x.shadowBlur = 14; txt(s.text, W / 2, 1022, { s: 47, w: 500, al: 'center' }); txt(s.text, W / 2, 1022, { s: 47, w: 500, al: 'center' }); x.restore(); }
+
+// ── overlay items (on any picture scene) ────────────────────────────────────────────────────────────────
+function items(t, s, list) {
+  for (const it of list || []) {
+    const a0 = AT(s, it.at), k = seg(t, a0, a0 + (it.dur || .5));
+    if (t < a0) continue;
+    switch (it.k) {
+      case 'drop': drop(it.text, it.x, it.y, t, a0, { s: it.s || 80, al: it.al || 'left', c: it.c, sh: 'rgba(0,0,0,.9)', id: it.id || 'dr' }); break;
+      case 'stamp': stamp(it.text, it.x, it.y, t, a0, { s: it.s || 90, rot: it.rot ?? -4, seed: it.seed || 1, id: it.id || 'st' }); break;
+      case 'typed': typed(it.text, it.x, it.y, t, a0, it.dur || .8, { s: it.s || 40, c: it.c, al: it.al, id: it.id || 'ty' }); break;
+      case 'txt': txt(it.text, it.x, it.y, { s: it.s || 40, w: it.w || 500, it: it.it, f: it.f, c: it.c || C.cream, al: it.al, a: k, sh: 'rgba(0,0,0,.85)', id: it.id || 'tx' }); break;
+      case 'tag': srcTag(it.text, it.x, it.y, k, it.id || 'tg'); break;
+      case 'ring': { x.save(); x.strokeStyle = C.red; x.lineWidth = 5; x.beginPath(); x.ellipse(it.x, it.y, it.r * (it.sx || 1), it.r, 0, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * eo(k)); x.stroke(); x.restore(); break; }
+      case 'count': { const v = lerp(it.from || 0, it.to, eo(seg(t, a0, a0 + (it.dur || 1.6)))); txt((it.pre || '') + num(v, it.d || 0) + (it.post || ''), it.x, it.y, { s: it.s || 140, f: 'Mono', w: 600, c: it.c || C.red, al: it.al || 'center', sh: 'rgba(0,0,0,.9)', id: it.id || 'ct' });
+        if (it.label) txt(it.label, it.x, it.y + 56, { s: 34, w: 500, al: it.al || 'center', a: seg(t, a0 + .3, a0 + .7), sh: 'rgba(0,0,0,.9)', id: (it.id || 'ct') + 'l' }); break; }
+      case 'cap': capPill(it.text, it.x, it.y, k); break;
+      case 'bar': { x.save(); x.globalAlpha = k * .8; x.fillStyle = C.bg; x.fillRect(it.x, it.y, it.w, it.h); x.restore(); break; }
+    }
+  }
+}
+
+// ── scenes ──────────────────────────────────────────────────────────────────────────────────────────────
+const flashK = (t, s) => s.noflash ? 0 : 1 - seg(t, s.t0, s.t0 + .12);
+function sHero(t, s) {   // one big picture (or film clip) with a slow push; tag; overlays
+  const a = s.box || [180, 60, 1560, 860], k = LK(t, s), z = lerp(s.z?.[0] ?? 1, s.z?.[1] ?? 1.06, eio(k));
+  if (s.clip) clipFrame(s.clip, a[0], a[1], a[2], a[3], t - s.t0, { z, fx: s.fx, fy: s.fy, rev: s.rev });
+  else cover(IM[s.img], a[0], a[1], a[2], a[3], { z, fx: s.fx, fy: s.fy, grade: s.grade });
+  if (!s.noflash) { const f = flashK(t, s); if (f > 0) { x.save(); x.globalAlpha = f * .8; x.fillStyle = '#fff'; x.fillRect(a[0], a[1], a[2], a[3]); x.restore(); } }
+  x.strokeStyle = C.line; x.lineWidth = 1; x.strokeRect(a[0] + .5, a[1] + .5, a[2] - 1, a[3] - 1);
+  if (s.cap) capPill(s.cap, a[0] + 18, a[1] + a[3] - 18);
+  srcTag(s.tag, a[0], a[1] - 16, 1, 'tg'); items(t, s, s.items);
+}
+function sPair(t, s) {   // two pictures, the second arrives later
+  const L = s.L, R = s.R;
+  cover(IM[L.img], L.box[0], L.box[1], L.box[2], L.box[3], { z: lerp(1, 1.05, LK(t, s)), fx: L.fx, fy: L.fy, grade: L.grade }); srcTag(L.tag, L.box[0], L.box[1] - 16, 1, 'tl');
+  if (L.cap) capPill(L.cap, L.box[0] + 18, L.box[1] + L.box[3] - 18);
+  const a0 = AT(s, R.at), k = seg(t, a0, a0 + .35); if (k > 0) {
+    x.save(); x.globalAlpha = k; x.translate(0, (1 - eo(k)) * 40); cover(IM[R.img], R.box[0], R.box[1], R.box[2], R.box[3], { fx: R.fx, fy: R.fy, grade: R.grade });
+    const f = 1 - seg(t, a0, a0 + .12); if (f > 0) { x.globalAlpha = f * .8; x.fillStyle = '#fff'; x.fillRect(R.box[0], R.box[1], R.box[2], R.box[3]); x.globalAlpha = k; }
+    if (R.cap) capPill(R.cap, R.box[0] + 18, R.box[1] + R.box[3] - 18); x.restore(); srcTag(R.tag, R.box[0], R.box[1] - 16, k, 'tr'); }
+  items(t, s, s.items);
+}
+function sStrip(t, s) {   // pictures riding on a 35 mm strip: each item pulls the strip one frame left with a claw jerk
+  const n = s.frames.length, Y = 140, pitch = FW + FGAP; let pos = 0;
+  s.frames.forEach((f, i) => { if (i === 0) return; const a0 = AT(s, f.at); const k = seg(t, a0, a0 + .5); pos += k < 1 ? (k < .1 ? 0 : eback(seg(k, .1, 1))) : 1; });
+  const drift = (t - s.t0) * 9, X0 = W / 2 - FW / 2 - pos * pitch - drift;
+  stripBand(X0 - pitch * 2, Y, pitch * (n + 4), { phase: X0 });
+  s.frames.forEach((f, i) => { const X = X0 + i * pitch; if (X > W + 20 || X + FW < -20) return;
+    const a0 = i === 0 ? s.t0 : AT(s, f.at), fl = 1 - seg(t, a0 + .35, a0 + .5);
+    filmFrame(f.img ?? { n: 'clip', c: f.clip }, X, Y, { z: lerp(1.0, 1.05, LK(t, s)), fx: f.fx, fy: f.fy, l: t - s.t0, edge: f.edge || s.edge, no: (s.no0 || 1) + i, flash: i && t > a0 + .35 ? fl * .0 : 0 }); });
+  for (let i = 0; i < n; i++) { if (pos > i - .5 && pos <= i + .5) { srcTag(s.frames[i].tag, W / 2 - FW / 2, Y - PERF - 20, 1, 'st' + i); if (s.frames[i].cap) capPill(s.frames[i].cap, W / 2 - FW / 2 + 18, Y + FH - 18); } }
+  // darken the strip outside the centre frame so the picture reads
+  x.save(); const g1 = x.createLinearGradient(0, 0, W / 2 - FW / 2, 0); g1.addColorStop(0, 'rgba(21,17,13,.95)'); g1.addColorStop(1, 'rgba(21,17,13,.35)'); x.fillStyle = g1; x.fillRect(0, 0, W / 2 - FW / 2 - 6, H);
+  const g2 = x.createLinearGradient(W / 2 + FW / 2, 0, W, 0); g2.addColorStop(0, 'rgba(21,17,13,.35)'); g2.addColorStop(1, 'rgba(21,17,13,.95)'); x.fillStyle = g2; x.fillRect(W / 2 + FW / 2 + 6, 0, W, H); x.restore();
+  items(t, s, s.items);
+}
+function sClip(t, s) {   // the 1963 city film in a projector gate
+  const Wd = s.w || 1180, Hd = Math.round(Wd * .75), X = (W - Wd) / 2, Y = s.y ?? 52, l = t - s.t0;
+  const per = (s.t1 - s.t0) / s.clips.length, ci = Math.min(s.clips.length - 1, Math.floor(l / per)), c = s.clips[ci];
+  x.save(); rr(X, Y, Wd, Hd, 22); x.clip(); clipFrame(c, X, Y, Wd, Hd, l - ci * per, { z: lerp(1, 1.04, (l - ci * per) / per), rev: s.rev });
+  const f = 1 - seg(l - ci * per, 0, .1); if (f > 0 && !s.noflash) { x.globalAlpha = f * .6; x.fillStyle = '#fff'; x.fillRect(X, Y, Wd, Hd); }
+  x.restore(); x.strokeStyle = C.line; x.lineWidth = 2; rr(X, Y, Wd, Hd, 22); x.stroke();
+  srcTag(s.tag || 'FILM · ROCHESTER: A CITY OF QUALITY · 1963 (PRELINGER ARCHIVES, PUBLIC DOMAIN)', X, Y - 14, 1, 'tg');
+  if (s.caps) capPill(s.caps[ci], X + 18, Y + Hd - 18);
+  if (s.rev) { const k = Math.floor(NOW * 2) % 2; txt('◀◀ REWIND', X + Wd - 24, Y + 46, { s: 26, f: 'Mono', w: 600, c: C.red, al: 'right', a: .6 + k * .4 }); }
+  items(t, s, s.items);
+}
+function sPortrait(t, s) {
+  const im = IM[s.img], H_ = 800, W_ = Math.min(700, Math.round(H_ * (im ? im.width / im.height : .75))), X = s.side === 'r' ? 1750 - W_ : 170;
+  cover(im, X, 100, W_, H_, { z: lerp(1.04, 1, LK(t, s)), fy: s.fy ?? .3, grade: s.grade });
+  const f = flashK(t, s); if (f > 0) { x.save(); x.globalAlpha = f * .8; x.fillStyle = '#fff'; x.fillRect(X, 100, W_, H_); x.restore(); }
+  srcTag(s.tag, X, 84, 1, 'tg');
+  const nx = s.side === 'r' ? X - 90 : X + W_ + 90, al = s.side === 'r' ? 'right' : 'left', a0 = s.t0 + .5, k = seg(t, a0, a0 + .4);
+  x.save(); x.globalAlpha = k; x.fillStyle = C.red; x.fillRect(s.side === 'r' ? nx - 6 : nx, 380, 6, 150); x.restore();
+  txt(s.name, nx + (al === 'left' ? 30 : -30), 440, { s: 64, w: 700, al, a: k, id: 'pn' });
+  txt(s.sub, nx + (al === 'left' ? 30 : -30), 500, { s: 26, f: 'Mono', w: 600, c: C.dim, al, a: seg(t, a0 + .2, a0 + .6), id: 'ps', ls: 1 });
+  items(t, s, s.items);
+}
+function sQuote(t, s) {   // a person's own words on paper (series quote card)
+  const a0 = s.t0;
+  if (s.img) { cover(IM[s.img], 60, 60, 760, 860, { z: lerp(1.05, 1.1, LK(t, s)), fy: s.fy ?? .3 }); shade(60, 60, 760, 860, .25); srcTag(s.imgTag, 60, 46, 1, 'qi'); }
+  const k = seg(t, a0 + .1, a0 + .3), X = s.img ? 880 : 300, w = s.img ? 980 : 1320; x.save(); x.globalAlpha = k; paperCard(X, 60, w, 860, t); x.restore();
+  txt('“', X + 50, 250, { s: 220, it: 1, c: C.red, a: k });
+  const lines = s.q, n = lines.length, LH = 92, y0 = 60 + (860 - (n - 1) * LH) / 2;
+  lines.forEach((q, i) => txt(q, X + 80, y0 + i * LH, { s: s.qs || 64, it: 1, c: C.ink, a: seg(t, a0 + .3 + i * .25, a0 + .5 + i * .25), id: 'q' + i }));
+  const kk = seg(t, a0 + .9, a0 + 1.3); x.save(); x.globalAlpha = kk; x.fillStyle = C.red; x.fillRect(X + 80, 790, 5, 80); x.restore();
+  txt(s.who, X + 104, 822, { s: 36, w: 700, c: C.ink, a: kk, id: 'qw' }); txt(s.role, X + 104, 860, { s: 22, f: 'Mono', w: 600, c: C.ink2, a: kk, id: 'qr' });
+  srcTag(s.src, X, 950, kk, 'qs');
+}
+
+// ── the rewind card: a strip streaks backwards, slows, stops on one frame; an exposure counter rolls to FRAME n ──
+function drum(digs, X, Y, t, a0, dur, fromN, toN, o = {}) {   // mechanical counter: each digit on its own drum
+  const k = eio(seg(t, a0, a0 + dur)), v = lerp(fromN, toN, k), str = String(Math.round(toN)).padStart(digs, '0'), cw = o.cw || 96, ch = o.ch || 140;
+  for (let d = 0; d < digs; d++) {
+    const p = Math.pow(10, digs - 1 - d), lo = v % p, val = (Math.floor(v / p) % 10) + (p > 1 ? clamp(lo - (p - 1)) : lo - Math.floor(lo)), X0 = X + d * (cw + 10);
+    x.save(); rr(X0, Y - ch / 2, cw, ch, 10); x.fillStyle = '#0b0907'; x.fill(); x.clip();
+    for (let j = -1; j <= 1; j++) { const dv = Math.floor(val) + j, yy = Y + (j - (val - Math.floor(val))) * ch * .9; txt(String(((dv % 10) + 10) % 10), X0 + cw / 2, yy + ch * .27, { s: ch * .72, f: 'Mono', w: 600, al: 'center', c: C.cream }); }
+    const g = x.createLinearGradient(0, Y - ch / 2, 0, Y + ch / 2); g.addColorStop(0, 'rgba(0,0,0,.85)'); g.addColorStop(.3, 'rgba(0,0,0,0)'); g.addColorStop(.7, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.85)'); x.fillStyle = g; x.fillRect(X0, Y - ch / 2, cw, ch);
+    x.restore(); x.strokeStyle = '#4a3d30'; x.lineWidth = 2; rr(X0, Y - ch / 2, cw, ch, 10); x.stroke();
+  }
+  if (REC && k >= 1) REC.push({ id: 'drum', text: str, x0: X, y0: Y - ch / 2, x1: X + digs * (cw + 10), y1: Y + ch / 2 });
+}
+function sCounter(t, s) {
+  const l = t - s.t0, ff = s.dir === 'ff', pitch = FW * .5 + 30, Y = 120, fh = FH * .5;
+  // the streak: velocity eases to zero at 1.5 s
+  const T = 1.5, v0 = 5200, dist = l < T ? v0 * (l - l * l / (2 * T)) : v0 * T / 2, X0 = (ff ? 1 : -1) * dist % (pitch * 40);
+  const blur = l < T ? (1 - l / T) : 0;
+  x.save(); x.globalAlpha = 1; for (let b = 0; b < (blur > .05 ? 5 : 1); b++) { x.save(); x.globalAlpha = blur > .05 ? .28 : 1; const off = X0 + b * blur * 60 * (ff ? -1 : 1);
+    x.translate(W / 2, Y + fh / 2); x.scale(.5, .5); x.translate(-W / 2, -(Y + fh / 2));
+    const base = W / 2 - FW / 2 + off * 2 - Math.ceil(off * 2 / (FW + FGAP) + 3) * (FW + FGAP);
+    stripBand(base - (FW + FGAP) * 2, Y + fh / 2 - FH / 2, (FW + FGAP) * 10, { phase: base });
+    for (let i = -2; i < 8; i++) { const X = base + i * (FW + FGAP), th = s.thumbs?.[((i % s.thumbs.length) + s.thumbs.length) % s.thumbs.length];
+      const isC = Math.abs(X - (W / 2 - FW / 2)) < 2 && blur === 0; filmFrame(isC ? 'blank' : (th || 'blank'), X, Y + fh / 2 - FH / 2, { grade: 'm' }); if (!isC && th) shade(X, Y + fh / 2 - FH / 2, FW, FH, .55); }
+    x.restore(); } x.restore();
+  // motion streaks while rewinding; the stopped frame goes dark for the counter
+  if (blur > .05) { const Rs = rnd(Math.floor(NOW * 30)); for (let i = 0; i < 26; i++) { x.fillStyle = `rgba(241,231,211,${.05 + Rs() * .08 * blur})`; x.fillRect(0, Y - 40 + Rs() * (fh + 80), W, 1 + Rs() * 2); } }
+  { const kd = seg(l, 1.15, 1.45); x.save(); x.globalAlpha = kd; x.fillStyle = '#060504'; x.fillRect(W / 2 - FW / 4, Y, FW / 2, fh); x.strokeStyle = C.line; x.strokeRect(W / 2 - FW / 4 + .5, Y + .5, FW / 2 - 1, fh - 1); x.restore(); }
+  // edge vignette
+  const g = x.createLinearGradient(0, 0, W, 0); g.addColorStop(0, 'rgba(21,17,13,1)'); g.addColorStop(.28, 'rgba(21,17,13,0)'); g.addColorStop(.72, 'rgba(21,17,13,0)'); g.addColorStop(1, 'rgba(21,17,13,1)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  // the counter in the stopped frame
+  const a0 = s.t0 + 1.25, k = seg(t, a0, a0 + .3), cx = W / 2, cy = Y + fh / 2;
+  x.save(); x.globalAlpha = k;
+  txt(ff ? 'FAST-FORWARD' : 'FRAME', cx, cy - 104, { s: 26, f: 'Mono', w: 600, ls: 8, c: C.dim, al: 'center' });
+  if (ff) drum(4, cx - 2 * 106, cy + 10, t, a0, 1.6, 1888, 2026, { cw: 96, ch: 140 });
+  else drum(2, cx - 106, cy + 10, t, a0, .9, s.n + 1, s.n, { cw: 96, ch: 140 });
+  x.restore();
+  stamp(s.year, cx, Y + fh + 130, t, s.t0 + 2.2, { s: 84, rot: -3, seed: s.n || 7, id: 'cy' });
+  if (s.title) drop(s.title, cx, Y + fh + 270, t, s.t0 + 2.55, { s: 74, al: 'center', id: 'ct' });
+  if (s.sub) txt(s.sub, cx, Y + fh + 330, { s: 34, it: 1, c: C.dim, al: 'center', a: seg(t, s.t0 + 3.1, s.t0 + 3.5), id: 'cs' });
+  // a strip of ten frame marks along the bottom: where we are in the rewind
+  const N = 10, bx = cx - 5 * 70;
+  for (let i = 0; i < N; i++) { const fno = N - i, on = ff ? true : fno >= s.n, cur = fno === s.n; x.save(); x.globalAlpha = .9 * seg(t, s.t0 + .3, s.t0 + .8);
+    x.fillStyle = cur ? C.red : on ? '#5a4a3a' : '#2a221b'; rr(bx + i * 70, 870, 56, 30, 4); x.fill(); txt(String(fno), bx + i * 70 + 28, 892, { s: 18, f: 'Mono', w: 600, al: 'center', c: cur ? C.cream : C.dim }); x.restore(); }
+}
+function sTitle(t, s) {
+  const l = t - s.t0; ground();
+  x.save(); x.globalAlpha = seg(l, 0, .8) * .5; x.translate(0, 0); stripBand(-200 - l * 30, 440 - FH / 2 + 60, 2600, { phase: -l * 30 }); x.restore();
+  shade(0, 0, W, H, .55);
+  drop('WHAT HAPPENED TO', W / 2, 420, t, s.t0 + .3, { s: 60, al: 'center', ls: 10, id: 'tt1' });
+  drop('ROCHESTER?', W / 2, 560, t, s.t0 + .8, { s: 170, al: 'center', ls: 6, id: 'tt2' });
+  txt('THE CITY KODAK BUILT', W / 2, 650, { s: 40, f: 'Mono', w: 600, ls: 10, c: C.dim, al: 'center', a: seg(l, 1.6, 2.2), id: 'tt3' });
+  stamp('1888 – 2012', W / 2, 760, t, s.t0 + 2.3, { s: 54, rot: -2, seed: 4, id: 'tt4' });
+}
+function sBlack(t, s) {   // the opening: a shutter click on black, then the whir
+  const l = t - s.t0; ground();
+  const k = seg(l, .36, .40) - seg(l, .40, .62); if (k > 0) { const g = x.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, 700); g.addColorStop(0, `rgba(255,248,235,${k * .55})`); g.addColorStop(1, 'rgba(255,248,235,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H); }
+  if (l > .9) { const kk = seg(l, .9, 1.2); x.save(); x.globalAlpha = kk; const off = (l - .9) * 3800;
+    x.translate(W / 2, H / 2); x.scale(.42, .42); x.translate(-W / 2, -H / 2); stripBand(-2000 + (off % (FW + FGAP)), H / 2 - FH / 2, 6000, { phase: off });
+    for (let i = -3; i < 6; i++) { const X = -2000 + (off % (FW + FGAP)) + i * (FW + FGAP) + 2000; x.fillStyle = '#0a0806'; x.fillRect(X, H / 2 - FH / 2, FW, FH); }
+    x.restore(); }
+}
+
+// ── motion graphics ────────────────────────────────────────────────────────────────────────────────────
+function sFiling(t, s) {   // the bankruptcy filing typesets itself; CHAPTER 11 stamped
+  if (s.img) { cover(IM[s.img], 0, 0, W, H, { z: lerp(1.1, 1.18, LK(t, s)), fy: .3 }); shade(0, 0, W, H, .72); }
+  const X = 560, Y = 90, w = 800, h = 820, a0 = s.t0 + .2; x.save(); x.globalAlpha = seg(t, a0, a0 + .3); x.translate(0, (1 - eo(seg(t, a0, a0 + .5))) * 60);
+  paperCard(X, Y, w, h, t); const L = [['UNITED STATES BANKRUPTCY COURT', 26, 700, 150], ['SOUTHERN DISTRICT OF NEW YORK', 22, 600, 190], ['In re:', 24, 400, 290],
+    ['EASTMAN KODAK COMPANY, et al.,', 30, 700, 340], ['Debtors.', 24, 400, 382], ['Chapter 11', 30, 700, 480], ['Filed: January 19, 2012', 26, 400, 530]];
+  L.forEach(([s_, fs, wt, yy], i) => typed(s_, X + w / 2, Y + yy, t, a0 + .4 + i * .32, .3, { s: fs, w: wt, c: C.ink, al: 'center', id: 'fl' + i }));
+  hair(X + 80, Y + 230, X + w - 80, Y + 230, C.ink, 1); hair(X + 80, Y + 420, X + w - 80, Y + 420, C.ink, 1);
+  x.restore();
+  stamp('CHAPTER 11', X + w / 2 + 60, Y + 690, t, AT(s, s.stampAt ?? -.62), { s: 88, rot: -8, seed: 2, id: 'fs' });
+  srcTag(s.tag, X, Y - 16, 1, 'tg');
+}
+function sDots(t, s) {   // one dot = 100 people: the workforce falls away
+  const N = s.from, M = s.to, cols = s.cols || 34, R = 9, gap = 26, gw = cols * gap, X0 = (W - gw) / 2 + gap / 2, Y0 = s.y0 || 150, Rr = rnd(5);
+  const a0 = AT(s, s.at ?? -.25), fall = seg(t, AT(s, s.fallAt ?? -.5), AT(s, s.fallAt ?? -.5) + 1.8);
+  for (let i = 0; i < N; i++) {
+    const c = i % cols, r = Math.floor(i / cols), px = X0 + c * gap, py = Y0 + r * gap, ap = seg(t, a0 + i * .0018, a0 + i * .0018 + .2);
+    if (ap <= 0) continue; const gone = i >= M, d = gone ? Rr() * .6 : 0, f = gone ? clamp((fall - d) / .5) : 0;
+    x.save(); x.globalAlpha = ap * (1 - f); x.fillStyle = gone ? C.dim : C.red; x.beginPath(); x.arc(px, py + f * f * 380, R * (1 - f * .4), 0, 7); x.fill(); x.restore();
+  }
+  const rows = Math.ceil(N / cols), yb = Y0 + rows * gap + 40;
+  txt(s.label || 'EACH DOT = 100 KODAK JOBS IN ROCHESTER', W / 2, yb + 10, { s: 24, f: 'Mono', w: 600, ls: 2, c: C.dim, al: 'center', a: seg(t, a0, a0 + .4), id: 'dl' });
+  if (s.left) txt(s.left, X0 - 30, Y0 + 40, { s: 64, f: 'Mono', w: 600, c: C.cream, al: 'right', a: seg(t, a0, a0 + .4), id: 'dL' });
+  if (s.right) txt(s.right, W / 2, yb + 110, { s: 90, f: 'Mono', w: 600, c: C.red, al: 'center', a: seg(t, AT(s, s.fallAt ?? -.5) + 1.2, AT(s, s.fallAt ?? -.5) + 1.6), id: 'dR' });
+  items(t, s, s.items);
+}
+function sScale(t, s) {   // two prices in one spring: Kodak Gallery vs Instagram
+  const cx = W / 2, cy = 380, a1 = AT(s, s.at1 ?? .2), a2 = AT(s, s.at2 ?? -.1), tilt = s.tilt ? lerp(0, 13, eback(seg(t, a2, a2 + .9))) * Math.PI / 180 : 0;
+  x.save(); x.strokeStyle = C.dim; x.lineWidth = 6; hair(cx, cy + 20, cx, 860, C.dim, 6); x.fillStyle = C.dim; x.beginPath(); x.moveTo(cx - 90, 880); x.lineTo(cx + 90, 880); x.lineTo(cx, 840); x.fill();
+  x.translate(cx, cy); x.rotate(tilt); hair(-560, 0, 560, 0, C.cream, 7); x.fillStyle = C.cream; x.beginPath(); x.arc(0, 0, 14, 0, 7); x.fill();
+  const pan = (side, k, big, lab1, lab2, lab3) => { const px = side * 560; x.save(); x.translate(px, 0); x.rotate(-tilt); hair(0, 0, -150, 230, C.dim, 2); hair(0, 0, 150, 230, C.dim, 2);
+    x.fillStyle = '#3a3027'; x.beginPath(); x.ellipse(0, 236, 190, 26, 0, 0, 7); x.fill(); x.globalAlpha = k;
+    txt(big, 0, 190, { s: big.length > 6 ? 84 : 110, f: 'Mono', w: 600, c: C.red, al: 'center', id: 'sb' + side }); txt(lab1, 0, 320, { s: 40, w: 700, al: 'center', id: 'sl' + side });
+    txt(lab2, 0, 366, { s: 26, f: 'Mono', w: 600, c: C.dim, al: 'center', id: 'sm' + side }); if (lab3) txt(lab3, 0, 404, { s: 26, f: 'Mono', w: 600, c: C.dim, al: 'center', id: 'sn' + side }); x.restore(); };
+  pan(-1, seg(t, a1, a1 + .4), '$23.8M', 'Kodak Gallery', 'SOLD · MARCH 2012', '5 BILLION+ PHOTOS'); pan(1, seg(t, a2, a2 + .4), '≈ $1B', 'Instagram', 'BOUGHT BY FACEBOOK · APRIL 2012', '13 EMPLOYEES');
+  x.restore();
+}
+function sMap(t, s) {   // the U.S. map with towns, routes, swarms of canisters, a mailing route
+  const c = camAt(s, t); ground();
+  withCam(c, () => {
+    const M = mapDraw(60, 60, 1800, { z: c.z, rails: s.rails }); if (!M) return;
+    for (const r of s.routes || []) { const A = M.P(r.a), B = M.P(r.b), a0 = AT(s, r.at), k = seg(t, a0, a0 + (r.dur || 1.4));
+      route(A, B, eio(k), { bend: r.bend, lw: 3 / c.z, dash: [10 / c.z, 7 / c.z], head: r.parcel ? (p, q) => parcel(p, q, 16 / c.z) : null });
+      if (r.label && k >= 1) txt(r.label, B[0] + (r.dx ?? 18) / c.z, B[1] + (r.dy ?? -18) / c.z, { s: 30 / c.z, w: 500, sh: 'rgba(0,0,0,.9)', id: 'rl' + r.b, a: seg(t, a0 + (r.dur || 1.4), a0 + (r.dur || 1.4) + .3) }); }
+    if (s.swarm) { const sw = s.swarm, B = M.P(sw.to), a0 = AT(s, sw.at), d1 = AT(s, sw.until ?? -.85), R = rnd(11), names = Object.keys(MAP.towns).filter(n => n !== sw.to);
+      for (let i = 0; i < sw.n; i++) { const st = lerp(a0, d1, R()), A = names.length && R() < .7 ? M.P(names[Math.floor(R() * names.length)]) : [60 + R() * 1800, 60 + R() * 1100], k = seg(t, st, st + 1.6);
+        if (k <= 0 || k >= 1) { if (k >= 1) continue; else continue; } const Q = arcPath(A, B, .18 + R() * .1), [px, py] = Q(eio(k)); canister(px, py, 11 / c.z, k * 6, 1 - seg(k, .85, 1)); }
+      const got = Math.round(sw.n * seg(t, a0 + 1.2, d1 + 1.6)); if (sw.count) txt(num(Math.round(got * sw.count / sw.n)) + ' ROLLS', B[0], B[1] + 70 / c.z, { s: 28 / c.z, f: 'Mono', w: 600, c: C.kc, al: 'center', sh: 'rgba(0,0,0,.9)' }); }
+    for (const tw of s.towns || []) { const [name, at, o] = tw; const k = seg(t, AT(s, at), AT(s, at) + .3); if (k > 0) town(M.P(name), o?.hide ? '' : (o?.label || name), { a: k, r: (o?.big ? 12 : 8) / c.z, s: (o?.big ? 40 : 30) / c.z, dx: (o?.dx ?? 16) / c.z, dy: (o?.dy ?? 9) / c.z, al: o?.al, id: 'tw' + name }); }
+  });
+  if (s.note) { const k = seg(t, AT(s, s.note.at ?? .3), AT(s, s.note.at ?? .3) + .4); txt(s.note.a, s.note.x ?? 120, s.note.y ?? 150, { s: 54, w: 700, a: k, id: 'na', sh: 'rgba(0,0,0,.9)' });
+    if (s.note.b) txt(s.note.b, s.note.x ?? 120, (s.note.y ?? 150) + 52, { s: 28, f: 'Mono', w: 600, c: C.dim, a: k, id: 'nb', ls: 1, sh: 'rgba(0,0,0,.9)' }); }
+  srcTag('MAP · NATURAL EARTH (PUBLIC DOMAIN), SCHEMATIC', 60, 46, .7);
+  items(t, s, s.items);
+}
+function sImplode(t, s) {   // a line-drawn factory block; charges flash; it folds down into a dust cloud (illustration)
+  const l = t - s.t0, boom = AT(s, s.boom ?? -.35) - s.t0, X = 560, Y = 200, w = 800, h = 600, R = rnd(3);
+  if (s.img) { cover(IM[s.img], 0, 0, W, H, { z: 1.15, fy: .5 }); shade(0, 0, W, H, .8); }
+  const fl = 3 + (s.floors || 6), col = 12, fall = Math.max(0, l - boom - .35);
+  x.save();
+  for (let f = 0; f < fl; f++) for (let c = 0; c < col; c++) {
+    const bx = X + c * w / col, by = Y + f * h / fl, bw = w / col, bh = h / fl, delay = (fl - f) * .02 + Math.abs(c - col / 2) * .015, ff = Math.max(0, fall - delay);
+    const dy = ff * ff * 520, rot = (R() - .5) * ff * 1.4, a = 1 - seg(ff, .7, 1.4);
+    if (a <= 0) continue; x.save(); x.globalAlpha = a; x.translate(bx + bw / 2, Math.min(by + bh / 2 + dy, Y + h - bh / 2 + (ff > .7 ? 0 : 0))); x.rotate(rot);
+    x.fillStyle = '#4a3d30'; x.fillRect(-bw / 2, -bh / 2, bw, bh); x.strokeStyle = 'rgba(241,231,211,.55)'; x.lineWidth = 1.5; x.strokeRect(-bw / 2, -bh / 2, bw, bh); x.fillStyle = 'rgba(246,213,138,.35)'; x.fillRect(-bw / 2 + bw * .22, -bh / 2 + bh * .25, bw * .56, bh * .45);
+    x.strokeStyle = 'rgba(241,231,211,.45)'; x.lineWidth = 1; x.strokeRect(-bw / 2 + bw * .22, -bh / 2 + bh * .25, bw * .56, bh * .45); x.restore();
+  }
+  // charges
+  if (l > boom - .9 && l < boom + .35) for (let f = 0; f < fl; f += 2) for (let c = 0; c < col; c += 3) { const tt = boom - .6 + (f + c) * .03; if (l > tt && l < tt + .12) { x.fillStyle = '#FFE7B0'; x.beginPath(); x.arc(X + c * w / col + 30, Y + f * h / fl + 20, 16, 0, 7); x.fill(); } }
+  // dust cloud
+  if (fall > 0) { const k = seg(fall, 0, 3.5), Rd = rnd(9); for (let i = 0; i < 70; i++) { const px = X + Rd() * w, r = 40 + Rd() * 140 * (.4 + k), py = Y + h - Rd() * h * .5 * k;
+      x.fillStyle = `rgba(150,130,105,${.10 * (1 - seg(fall, 3, 6)) * Math.min(1, fall * 2)})`; x.beginPath(); x.arc(px + (Rd() - .5) * 200 * k, py, r, 0, 7); x.fill(); } }
+  x.restore(); hair(380, Y + h, 1540, Y + h, C.dim, 2);
+  txt(s.label || '', W / 2, Y - 50, { s: 46, w: 700, al: 'center', id: 'il' }); txt('ILLUSTRATION', W / 2, Y + h + 50, { s: 20, f: 'Mono', w: 600, ls: 3, c: C.faint, al: 'center' });
+  if (s.time) stamp(s.time, 1560, 260, t, s.t0 + .4, { s: 64, rot: 4, seed: 5, id: 'it' });
+  items(t, s, s.items);
+}
+function sBars(t, s) {   // a few labelled bars that grow
+  const X = 300, Y0 = 260, bh = 110, gap = 70, maxW = 1200;
+  txt(s.title, X, 180, { s: 30, f: 'Mono', w: 600, ls: 2, c: C.dim, id: 'bt' });
+  s.data.forEach(([lab, v, show, col], i) => { const a0 = AT(s, s.at?.[i] ?? (.2 + i * .5)), k = eo(seg(t, a0, a0 + 1)); const y = Y0 + i * (bh + gap);
+    txt(lab, X, y - 12, { s: 34, w: 700, a: seg(t, a0, a0 + .3), id: 'bl' + i }); x.fillStyle = col || C.red; x.fillRect(X, y, maxW * v / s.max * k, bh);
+    txt(show, X + maxW * v / s.max * k + 24, y + bh * .7, { s: 64, f: 'Mono', w: 600, c: C.cream, a: seg(t, a0 + .6, a0 + 1), id: 'bv' + i }); });
+  if (s.note) txt(s.note, X, 930, { s: 24, f: 'Mono', w: 600, c: C.faint, id: 'bn' });
+  items(t, s, s.items);
+}
+function pie(cx, cy, r, frac, k, col, lab, sub, id) {
+  x.fillStyle = '#2c241c'; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill();
+  x.fillStyle = col; x.beginPath(); x.moveTo(cx, cy); x.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac * k); x.closePath(); x.fill();
+  x.strokeStyle = C.line; x.lineWidth = 2; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.stroke();
+  txt(lab, cx, cy + r + 80, { s: 44, w: 700, al: 'center', id: id + 'l' }); txt(sub, cx, cy + r + 126, { s: 26, f: 'Mono', w: 600, c: C.dim, al: 'center', id: id + 's' });
+}
+function sMargin(t, s) {   // how much of each dollar was profit: film vs a digital camera
+  const a1 = AT(s, s.at1 ?? .2), a2 = AT(s, s.at2 ?? -.45);
+  txt('OF EVERY DOLLAR OF SALES, KEPT AS GROSS MARGIN', W / 2, 130, { s: 28, f: 'Mono', w: 600, ls: 2, c: C.dim, al: 'center', id: 'mt' });
+  pie(560, 480, 250, .7, eo(seg(t, a1, a1 + 1.1)), C.red, 'A roll of film', '≈ 70¢', 'p1');
+  if (t > a2) { x.save(); x.globalAlpha = seg(t, a2, a2 + .3); pie(1360, 480, 250, .06, eo(seg(t, a2, a2 + 1)), C.dim, 'A digital camera', 'A FEW CENTS — SOMETIMES A LOSS', 'p2'); x.restore(); }
+  txt('APPROXIMATE · FILM MARGIN AS REPORTED FOR KODAK; CAMERA MARGINS VARIED', W / 2, 960, { s: 18, f: 'Mono', w: 600, c: C.faint, al: 'center' });
+}
+function camShape(k) {   // outline from a compact camera (k=0) to a phone (k=1)
+  const w = lerp(520, 300, k), h = lerp(330, 600, k), r = lerp(36, 46, k); return { w, h, r };
+}
+function sPhone(t, s) {
+  const k = eio(seg(t, AT(s, s.at ?? .5), AT(s, s.at ?? .5) + 1.4)), cx = W / 2, cy = 470, { w, h, r } = camShape(k);
+  x.save(); x.strokeStyle = C.cream; x.lineWidth = 6; rr(cx - w / 2, cy - h / 2, w, h, r); x.stroke();
+  const lr = lerp(95, 22, k), lx = lerp(cx + 40, cx + w / 2 - 50, k), ly = lerp(cy + 10, cy - h / 2 + 50, k); x.beginPath(); x.arc(lx, ly, lr, 0, 7); x.stroke(); x.beginPath(); x.arc(lx, ly, lr * .55, 0, 7); x.stroke();
+  x.globalAlpha = 1 - k; x.strokeRect(cx - w / 2 + 40, cy - h / 2 - 26, 110, 26); x.globalAlpha = k; rr(cx - w / 2 + 22, cy - h / 2 + 100, w - 44, h - 180, 10); x.stroke(); x.restore();
+  stamp('2007', cx + 380, cy - 220, t, AT(s, s.at ?? .5) + 1.4, { s: 80, seed: 3, id: 'py' });
+  txt(k < .5 ? 'A CAMERA' : 'A TELEPHONE', cx, cy + h / 2 + 90, { s: 32, f: 'Mono', w: 600, ls: 4, c: C.dim, al: 'center', id: 'pl' });
+  items(t, s, s.items);
+}
+function sBoard(t, s) {   // the Dow board: one name leaves
+  const X = 420, Y = 170, w = 1080, h = 700; x.fillStyle = '#0d0b09'; x.fillRect(X, Y, w, h); x.strokeStyle = C.line; x.strokeRect(X, Y, w, h);
+  txt('DOW JONES INDUSTRIAL AVERAGE', X + w / 2, Y + 70, { s: 34, f: 'Mono', w: 600, ls: 3, c: C.dim, al: 'center', id: 'b0' });
+  txt('CHANGES EFFECTIVE 8 APRIL 2004', X + w / 2, Y + 112, { s: 22, f: 'Mono', w: 600, ls: 2, c: C.faint, al: 'center' });
+  const rows = [['OUT', 'AT&T CORP.'], ['OUT', 'EASTMAN KODAK CO.'], ['OUT', 'INTERNATIONAL PAPER CO.'], ['IN', 'AMERICAN INTERNATIONAL GROUP'], ['IN', 'PFIZER INC.'], ['IN', 'VERIZON COMMUNICATIONS']];
+  rows.forEach(([io, n], i) => { const a0 = AT(s, .3 + i * .18), k = seg(t, a0, a0 + .2), y = Y + 200 + i * 80, key = n.includes('KODAK');
+    txt(io, X + 80, y, { s: 28, f: 'Mono', w: 600, c: io === 'OUT' ? C.red : C.dim, a: k * (key ? 1 : .6) }); txt(n, X + 200, y, { s: key ? 42 : 34, f: 'Mono', w: 600, c: key ? C.cream : C.dim, a: k * (key ? 1 : .55), id: 'br' + i });
+    if (key) { const kk = seg(t, AT(s, -.6), AT(s, -.6) + .5); hair(X + 190, y - 14, X + 190 + 560 * kk, y - 14, C.red, 5); stamp('1930 – 2004', X + 900, y - 12, t, AT(s, -.45), { s: 40, seed: 6, rot: -3, id: 'bk' }); } });
+  srcTag('SOURCE · DOW JONES ANNOUNCEMENT, 1 APRIL 2004 (CNN MONEY)', X, Y + h + 30, 1);
+}
+function sIcons(t, s) {   // nine in ten rolls of film, more than eight in ten cameras (1976)
+  const draw = (row, n, frac, kind, a0, lab) => { for (let i = 0; i < 10; i++) { const k = seg(t, a0 + i * .08, a0 + i * .08 + .25), X = 330 + i * 140, Y = row, on = i < Math.floor(frac * 10) ? 1 : i < frac * 10 ? frac * 10 - i : 0;
+      x.save(); x.globalAlpha = k; if (kind === 'roll') { canister(X, Y, 50, 0, .25); x.save(); x.beginPath(); x.rect(X - 36, Y - 60, 72 * on, 120); x.clip(); canister(X, Y, 50, 0, 1); x.restore(); }
+      else { x.strokeStyle = C.faint; x.lineWidth = 3; rr(X - 44, Y - 30, 88, 60, 8); x.stroke(); x.beginPath(); x.arc(X, Y, 18, 0, 7); x.stroke(); x.save(); x.beginPath(); x.rect(X - 50, Y - 40, 100 * on, 80); x.clip();
+        x.strokeStyle = C.red; x.lineWidth = 4; rr(X - 44, Y - 30, 88, 60, 8); x.stroke(); x.beginPath(); x.arc(X, Y, 18, 0, 7); x.stroke(); x.restore(); } x.restore(); }
+    txt(lab, 330 - 50, row + 120, { s: 32, w: 500, a: seg(t, a0 + .8, a0 + 1.2), id: 'ic' + row }); };
+  draw(330, 10, .9, 'roll', AT(s, .2), '9 of every 10 rolls of film sold in America'); draw(680, 10, .85, 'cam', AT(s, -.35), 'more than 8 of every 10 cameras');
+  stamp('1976', 1600, 180, t, AT(s, -.75), { s: 70, seed: 8, id: 'iy' });
+}
+const POP = [[1880, 89366], [1890, 133896], [1900, 162608], [1910, 218149], [1920, 295750], [1930, 328132], [1940, 324975], [1950, 332488], [1960, 318611], [1970, 296233], [1980, 241741], [1990, 231636], [2000, 219773], [2010, 210565], [2020, 211328]];
+function sLine(t, s) {   // Rochester's population, census by census
+  const X = 220, Y = 160, w = 1480, h = 640, px = yr => X + (yr - 1880) / 140 * w, py = v => Y + h - v / 350000 * h, k = eio(seg(t, AT(s, s.at ?? .1), AT(s, s.at ?? .1) + (s.draw || 2.2)));
+  txt('ROCHESTER, N.Y. · POPULATION AT EACH CENSUS', X, Y - 40, { s: 26, f: 'Mono', w: 600, ls: 2, c: C.dim, id: 'lt' });
+  for (const v of [100000, 200000, 300000]) { hair(X, py(v), X + w, py(v), '#2a231b', 1); txt(num(v), X - 16, py(v) + 8, { s: 20, f: 'Mono', c: C.faint, al: 'right' }); }
+  for (let yr = 1880; yr <= 2020; yr += 20) txt(String(yr), px(yr), Y + h + 40, { s: 22, f: 'Mono', c: C.faint, al: 'center' });
+  const yEnd = lerp(1880, 2020, k); x.save(); x.strokeStyle = C.cream; x.lineWidth = 5; x.beginPath();
+  POP.forEach(([yr, v], i) => { if (yr > yEnd + 10) return; const yy = Math.min(yr, yEnd); let vv = v; if (yr > yEnd && i) { const [y0, v0] = POP[i - 1]; vv = lerp(v0, v, (yEnd - y0) / 10); }
+    i ? x.lineTo(px(yy), py(vv)) : x.moveTo(px(yy), py(vv)); }); x.stroke(); x.restore();
+  for (const [yr, lab] of s.marks || []) { const v = POP.find(p => p[0] === yr)[1]; if (yEnd < yr) continue; town([px(yr), py(v)], '', { r: 10 });
+    txt(num(v), px(yr), py(v) - 30, { s: 40, f: 'Mono', w: 600, c: C.red, al: 'center', id: 'lm' + yr }); if (lab) txt(lab, px(yr), py(v) - 80, { s: 24, f: 'Mono', w: 600, c: C.dim, al: 'center', id: 'll' + yr }); }
+  srcTag('SOURCE · U.S. CENSUS', X, Y + h + 90, .8);
+}
+function sPixels(t, s) {   // what 100 × 100 dots looks like: the grid fills in raster order, as onto a tape
+  const src = s.clip ? CLIP[s.clip]?.[s.fr || 0] : IM[s.img]; if (!src) return; if (!s._g) { const c = mk(100, 100), g = c.getContext('2d'); g.filter = 'grayscale(1) contrast(1.2)';
+    const sz = Math.min(src.width, src.height); g.drawImage(src, (src.width - sz) * (s.fx ?? .5), (src.height - sz) * (s.fy ?? .5), sz, sz, 0, 0, 100, 100); s._g = g.getImageData(0, 0, 100, 100).data; s._c = c; }
+  const k = seg(t, AT(s, s.at ?? .3), AT(s, s.until ?? -.85)), n = Math.floor(k * 10000), S = 7.6, X = 980 - 380, Y = 92;
+  x.fillStyle = '#0b0907'; x.fillRect(X - 6, Y - 6, 100 * S + 12, 100 * S + 12);
+  for (let i = 0; i < n; i++) { const v = s._g[i * 4]; x.fillStyle = `rgb(${v},${v},${v})`; x.fillRect(X + (i % 100) * S, Y + Math.floor(i / 100) * S, S - 1, S - 1); }
+  if (k < 1) { x.fillStyle = C.red; x.fillRect(X + (n % 100) * S, Y + Math.floor(n / 100) * S, S, S); }
+  txt('100 × 100', X - 40, Y + 60, { s: 54, f: 'Mono', w: 600, c: C.cream, al: 'right', id: 'px1' }); txt(num(n) + ' DOTS', X - 40, Y + 110, { s: 30, f: 'Mono', w: 600, c: C.red, al: 'right', id: 'px2' });
+  txt('0.01 MEGAPIXEL', X - 40, Y + 152, { s: 24, f: 'Mono', w: 600, c: C.dim, al: 'right', id: 'px3' });
+  srcTag(s.tag || 'ILLUSTRATION · WHAT 100 × 100 DOTS LOOKS LIKE (NOT SASSON’S PICTURE)', X, Y + 100 * S + 34, 1);
+}
+function cassette(cx, cy, sc, rot, k) {
+  x.save(); x.translate(cx, cy); x.scale(sc, sc); x.fillStyle = '#2b241d'; rr(-300, -190, 600, 380, 22); x.fill(); x.strokeStyle = C.dim; x.lineWidth = 3; rr(-300, -190, 600, 380, 22); x.stroke();
+  x.fillStyle = C.paper; rr(-250, -160, 500, 120, 8); x.fill(); txt('DIGITAL IMAGE · 1', -230, -100, { s: 26, f: 'Mono', w: 600, c: C.ink }); txt('DEC 1975', -230, -62, { s: 22, f: 'Mono', w: 600, c: C.red });
+  x.fillStyle = '#0d0b09'; rr(-190, -20, 380, 120, 50); x.fill();
+  for (const [ox, amt] of [[-110, 1 - k * .6], [110, .4 + k * .6]]) { x.save(); x.translate(ox, 40); x.fillStyle = '#4a3b2c'; x.beginPath(); x.arc(0, 0, 30 + 22 * amt, 0, 7); x.fill(); x.rotate(rot);
+    x.strokeStyle = C.cream; x.lineWidth = 4; x.beginPath(); x.arc(0, 0, 22, 0, 7); x.stroke(); for (let i = 0; i < 6; i++) { x.rotate(Math.PI / 3); hair(0, 10, 0, 22, C.cream, 4); } x.restore(); }
+  x.restore();
+}
+function sCassette(t, s) {   // 23 seconds to write one picture onto tape
+  const a0 = AT(s, .2), a1 = AT(s, -.9), k = seg(t, a0, a1), sec = 23 * k;
+  if (s.art) inkArt(IM[s.art], 180, 200, 520, { a: .85 });
+  cassette(1240, 480, 1.1, (t - s.t0) * 6, k);
+  txt('0:' + String(Math.floor(sec)).padStart(2, '0'), 1240, 830, { s: 110, f: 'Mono', w: 600, c: C.red, al: 'center', id: 'cs' });
+  txt('SECONDS TO RECORD ONE PICTURE', 1240, 890, { s: 24, f: 'Mono', w: 600, ls: 2, c: C.dim, al: 'center', a: seg(t, a0, a0 + .4), id: 'cl' });
+  if (s.art) srcTag(s.artTag, 180, 184, 1);
+}
+function sTV(t, s) {   // the playback: the picture on a television set
+  const X = 560, Y = 120, w = 800, h = 620, k = seg(t, AT(s, s.at ?? -.45), AT(s, s.at ?? -.45) + .6);
+  x.fillStyle = '#2b241d'; rr(X - 60, Y - 50, w + 120, h + 160, 30); x.fill(); x.strokeStyle = C.line; x.lineWidth = 2; rr(X - 60, Y - 50, w + 120, h + 160, 30); x.stroke();
+  x.save(); rr(X, Y, w, h, 60); x.clip(); x.fillStyle = '#0a0c0a'; x.fillRect(X, Y, w, h);
+  const P = FILM.scenes.find(q => q.type === 'pixels'); if (P && P._c && k > 0) { x.globalAlpha = k * (.85 + Math.sin(NOW * 40) * .05); x.imageSmoothingEnabled = false; x.filter = 'brightness(1.2) contrast(1.1)';
+    x.drawImage(P._c, X + (w - h) / 2, Y, h, h); x.filter = 'none'; x.imageSmoothingEnabled = true; }
+  x.globalAlpha = 1; for (let yy = Y; yy < Y + h; yy += 4) { x.fillStyle = 'rgba(0,0,0,.25)'; x.fillRect(X, yy, w, 2); }
+  const g = x.createRadialGradient(X + w / 2, Y + h / 2, 100, X + w / 2, Y + h / 2, w * .7); g.addColorStop(0, 'rgba(180,220,200,.06)'); g.addColorStop(1, 'rgba(0,0,0,.6)'); x.fillStyle = g; x.fillRect(X, Y, w, h); x.restore();
+  for (let i = 0; i < 2; i++) { x.fillStyle = '#4a3b2c'; x.beginPath(); x.arc(X + w - 60 - i * 90, Y + h + 60, 24, 0, 7); x.fill(); }
+  txt('PLAYBACK ON A TELEVISION · ILLUSTRATION', X - 60, Y + h + 160, { s: 20, f: 'Mono', w: 600, ls: 2, c: C.faint });
+  items(t, s, s.items);
+}
+function sDraw(t, s) {   // a patent drawing draws itself; callouts appear
+  const im = IM[s.img]; if (!im) return; const w = s.w || 640, X = s.x ?? (W - w) / 2, Y = s.y ?? 60, k = seg(t, AT(s, s.at ?? .1), AT(s, s.until ?? -.6));
+  const c = camAt(s, t); withCam(c, () => { const h = inkArt(im, X, Y, w, { reveal: k }); for (const co of s.calls || []) { const a0 = AT(s, co.at), kk = seg(t, a0, a0 + .4); if (kk <= 0) continue;
+      const px = X + co.px * w, py = Y + co.py * h; x.save(); x.globalAlpha = kk; hair(px, py, co.tx, co.ty, C.red, 2.5); x.fillStyle = C.red; x.beginPath(); x.arc(px, py, 7, 0, 7); x.fill(); x.restore();
+      txt(co.text, co.tx + (co.tx > px ? 14 : -14), co.ty + 12, { s: co.s || 36, w: 700, al: co.tx > px ? 'left' : 'right', a: kk, id: 'dc' + co.text.slice(0, 6), sh: 'rgba(0,0,0,.9)' }); } });
+  srcTag(s.tag, X, Y - 16, 1, 'tg'); items(t, s, s.items);
+}
+function sLayers(t, s) {   // Kodachrome: three colour layers in one film
+  if (s.img) { cover(IM[s.img], 120, 80, 600, 840, { fy: .3 }); srcTag(s.tag, 120, 64, 1); }
+  const cols = [['#E8C21A', 'YELLOW'], ['#C2307A', 'MAGENTA'], ['#1E8FB8', 'CYAN']], k = eio(seg(t, AT(s, s.at ?? .3), AT(s, s.at ?? .3) + 1.4)), cx = 1300, cy = 470;
+  cols.forEach(([c, n], i) => { const dy = (i - 1) * 150 * k; x.save(); x.translate(cx, cy + dy); x.transform(1, 0, -.6, .45, 0, 0); x.globalAlpha = .55; x.fillStyle = c; x.fillRect(-300, -200, 600, 400); x.globalAlpha = .9; x.strokeStyle = c; x.lineWidth = 3; x.strokeRect(-300, -200, 600, 400); x.restore();
+    txt(n, cx + 360, cy + dy + 10, { s: 28, f: 'Mono', w: 600, ls: 3, c, a: k, id: 'ly' + i }); });
+  txt('THREE LAYERS OF EMULSION, ONE FILM', cx, 900, { s: 26, f: 'Mono', w: 600, ls: 2, c: C.dim, al: 'center', a: k, id: 'lyt' });
+  stamp('1935', cx + 330, 150, t, AT(s, -.5), { s: 70, seed: 9, id: 'lyy' });
+}
+function sBrownie(t, s) {   // the $1 Brownie assembles: box, lens, winding key, viewfinder
+  const cx = 1250, cy = 470, a0 = AT(s, .1), p = i => eback(seg(t, a0 + i * .35, a0 + i * .35 + .5));
+  if (s.img) { cover(IM[s.img], 120, 120, 560, 780, { fy: .5, grade: 'b' }); srcTag(s.tag, 120, 104, 1); }
+  x.save(); x.strokeStyle = C.cream; x.lineWidth = 5; x.fillStyle = '#2a221b';
+  x.save(); x.translate(0, (1 - p(0)) * -400); x.globalAlpha = seg(t, a0, a0 + .2); rr(cx - 220, cy - 260, 440, 520, 14); x.fill(); x.stroke(); x.restore();
+  x.save(); x.globalAlpha = seg(t, a0 + .35, a0 + .5); x.translate(cx, cy + 20); x.scale(p(1), p(1)); x.beginPath(); x.arc(0, 0, 70, 0, 7); x.stroke(); x.beginPath(); x.arc(0, 0, 30, 0, 7); x.stroke(); x.restore();
+  x.save(); x.globalAlpha = seg(t, a0 + .7, a0 + .85); x.translate(cx + 220 + (1 - p(2)) * 200, cy - 120); x.strokeRect(0, -20, 40, 40); x.beginPath(); x.arc(60, 0, 28, 0, 7); x.stroke(); x.restore();
+  x.save(); x.globalAlpha = seg(t, a0 + 1.05, a0 + 1.2); x.translate(cx - 140, cy - 260 - (1 - p(3)) * 150); x.strokeRect(0, -50, 90, 50); x.restore();
+  x.restore(); stamp(s.price || '$1', cx + 230, cy + 260, t, AT(s, s.priceAt ?? -.55), { s: 110, seed: 4, id: 'bp' });
+  if (s.label) txt(s.label, cx, cy + 350, { s: 30, f: 'Mono', w: 600, ls: 3, c: C.dim, al: 'center', a: seg(t, a0 + 1.4, a0 + 1.8), id: 'bl' });
+}
+function sEnvelope(t, s) {   // the first wage dividend
+  const cx = W / 2, cy = 560, a0 = AT(s, .2), o = eio(seg(t, a0 + .4, a0 + 1)), up = eio(seg(t, a0 + 1, a0 + 1.8));
+  if (s.img) { cover(IM[s.img], 0, 0, W, H, { z: 1.12, grade: 'b' }); shade(0, 0, W, H, .78); }
+  x.save(); x.fillStyle = '#C9B48A'; x.fillRect(cx - 400, cy - 60, 800, 420); // back
+  x.save(); x.translate(0, -up * 330); paperCard(cx - 360, cy - 30, 720, 360, t); txt('EASTMAN KODAK COMPANY', cx, cy + 30, { s: 30, w: 700, c: C.ink, al: 'center', ls: 2 });
+  txt('WAGE DIVIDEND', cx, cy + 100, { s: 60, w: 700, c: C.ink, al: 'center', id: 'ew' }); txt('2% of your wages for the past five years', cx, cy + 160, { s: 30, it: 1, c: C.ink, al: 'center', id: 'ex' });
+  x.restore();
+  x.fillStyle = '#D9C59C'; x.beginPath(); x.moveTo(cx - 400, cy - 60); x.lineTo(cx, cy + 160); x.lineTo(cx + 400, cy - 60); x.lineTo(cx + 400, cy + 360); x.lineTo(cx - 400, cy + 360); x.closePath(); x.fill();
+  x.save(); x.translate(cx, cy - 60); x.scale(1, lerp(1, -1, o)); x.fillStyle = o > .5 ? '#BFA97E' : '#CDB98F'; x.beginPath(); x.moveTo(-400, 0); x.lineTo(0, 230); x.lineTo(400, 0); x.closePath(); x.fill(); x.restore();
+  x.restore(); stamp('1912', cx + 470, cy - 300, t, a0 + .2, { s: 80, seed: 3, id: 'ey' }); if (s.tag) srcTag(s.tag, 60, 60, 1);
+}
+function sRounds(t, s) {   // the first Kodak: 100 round pictures on one roll
+  const a0 = AT(s, s.at ?? .1), k = seg(t, a0, AT(s, s.until ?? -.4)), n = Math.floor(k * 100), r = 34, X0 = W / 2 - 4.5 * 84, Y0 = 130;
+  for (let i = 0; i < 100; i++) { const X = X0 + (i % 10) * 84, Y = Y0 + Math.floor(i / 10) * 74; x.strokeStyle = '#3a3027'; x.lineWidth = 2; x.beginPath(); x.arc(X, Y, r, 0, 7); x.stroke();
+    if (i < n) { const im = IM[i % 3 === 0 ? 'eastman_gallia' : 'eastman_church']; x.save(); x.beginPath(); x.arc(X, Y, r, 0, 7); x.clip(); if (im) { x.filter = 'grayscale(1) sepia(.7)'; const sz = Math.min(im.width, im.height); x.drawImage(im, (im.width - sz) / 2, (im.height - sz) / 2, sz, sz, X - r, Y - r, 2 * r, 2 * r); x.filter = 'none'; } x.restore(); } }
+  txt(String(n), X0 - 80, Y0 + 40, { s: 90, f: 'Mono', w: 600, c: C.red, al: 'right', id: 'rn' }); txt('PICTURES', X0 - 80, Y0 + 84, { s: 24, f: 'Mono', w: 600, ls: 3, c: C.dim, al: 'right' });
+  srcTag('ROUND PICTURES TAKEN WITH A KODAK · FREDERICK CHURCH, 1890 (PUBLIC DOMAIN) · REPEATED', X0 - r, Y0 + 9 * 74 + 70, 1);
+}
+function sSlides(t, s) {   // Kodachrome slides fan into a carousel tray that turns, one click per slide
+  const cx = 1180, cy = 500, R = 330, n = 18, a0 = AT(s, .1), rot = Math.floor(Math.max(0, t - a0 - 1) * 1.6) * (Math.PI * 2 / n) + eio(((t - a0 - 1) * 1.6) % 1) * 0 ;
+  if (s.img) { cover(IM[s.img], 100, 100, 560, 820, { grade: 'm' }); srcTag(s.tag, 100, 84, 1); }
+  x.save(); x.translate(cx, cy); x.fillStyle = '#1e1913'; x.beginPath(); x.arc(0, 0, R + 70, 0, 7); x.fill(); x.strokeStyle = C.line; x.lineWidth = 2; x.stroke();
+  for (let i = 0; i < n; i++) { const k = eback(seg(t, a0 + i * .05, a0 + i * .05 + .45)); if (k <= 0) continue; const a = i / n * Math.PI * 2 + rot;
+    x.save(); x.rotate(a); x.translate(0, -R * k); x.fillStyle = C.paper; x.fillRect(-36, -36, 72, 72); const fr = CLIP[s.clips[i % s.clips.length]]; if (fr) { const im = fr[(i * 13) % fr.length]; x.filter = 'saturate(1.2) contrast(1.05)'; x.drawImage(im, im.width * .15, 0, im.width * .7, im.height, -26, -20, 52, 40); x.filter = 'none'; } x.restore(); }
+  x.fillStyle = C.bg; x.beginPath(); x.arc(0, 0, 90, 0, 7); x.fill(); x.restore();
+  txt('KODACHROME SLIDES · 1935–2009', cx, cy + R + 140, { s: 26, f: 'Mono', w: 600, ls: 3, c: C.kc, al: 'center', id: 'sl' });
+}
+function sEnd(t, s) {   // the last image is the first: the 1889 advertisement
+  const l = t - s.t0, im = IM['ad1889'];
+  if (im) { const w = 1100, h = w * im.height / im.width; cover(im, (W - w) / 2, 110, w, h, { grade: 'a', z: lerp(1, 1.05, seg(l, 0, s.t1 - s.t0)) }); srcTag('KODAK ADVERTISEMENT · NOVEMBER 1889 (PUBLIC DOMAIN)', (W - w) / 2, 94, 1); }
+  drop('You press the button.', W / 2, 880, t, s.t0 + 1.5, { s: 64, al: 'center', w: 700, id: 'e1' }); drop('We do the rest.', W / 2, 960, t, s.t0 + 3.2, { s: 64, al: 'center', w: 700, id: 'e2', c: C.red });
+  const k = seg(l, 8, 9); if (k > 0) { shade(0, 0, W, H, k * .9); const L = FILM.credits || [];
+    L.forEach((c, i) => txt(c, W / 2, 250 + i * 46, { s: i === 0 ? 40 : 24, f: i === 0 ? 'Sans' : 'Mono', w: i === 0 ? 700 : 600, c: i === 0 ? C.cream : C.dim, al: 'center', a: k, id: 'cr' + i })); }
+}
+function sType(t, s) {   // big type on the dark ground (with an optional dim picture behind)
+  if (s.img) { cover(IM[s.img], 0, 0, W, H, { z: lerp(1.08, 1.16, LK(t, s)), fx: s.fx, fy: s.fy }); shade(0, 0, W, H, .8); }
+  const n = s.lines.length, y0 = 540 - (n - 1) * 70; const b0 = AT(s, s.at ?? .1); s.lines.forEach((ln, i) => drop(ln, W / 2, y0 + i * 140, t, b0 + i * .5, { s: s.s || 120, al: 'center', id: 'ty' + i, c: i === s.redLine ? C.red : C.cream }));
+  if (s.sub) txt(s.sub, W / 2, y0 + n * 140 - 20, { s: 38, it: 1, c: C.dim, al: 'center', a: seg(t, b0 + n * .5, b0 + n * .5 + .4), id: 'tys' });
+  srcTag(s.tag, 60, 60, .8); items(t, s, s.items);
+}
+function sMyth(t, s) {   // the internet version, checked line by line
+  txt('THE USUAL VERSION', 300, 200, { s: 28, f: 'Mono', w: 600, ls: 4, c: C.dim, id: 'my0' });
+  s.lines.forEach(([ln, ok], i) => { const a0 = AT(s, s.at[i]), k = seg(t, a0, a0 + .3), y = 330 + i * 170; txt(ln, 300, y, { s: 62, w: 700, a: k, id: 'my' + i });
+    const a1 = AT(s, s.mark ?? -.15), kk = seg(t, a1 + i * .2, a1 + i * .2 + .25); if (kk > 0) { txt(ok ? 'TRUE' : 'NOT QUITE', 1660, y, { s: 34, f: 'Mono', w: 600, c: ok ? C.cream : C.red, al: 'right', a: kk, id: 'mm' + i });
+      if (!ok) hair(300, y - 22, 300 + measure(ln, { s: 62, w: 700 }) * kk, y - 22, C.red, 4); } });
+}
+function sMarquee(t, s) {   // the theatre name changes
+  const X = 360, Y = 300, w = 1200, h = 300, k = eio(seg(t, AT(s, s.at ?? -.6), AT(s, s.at ?? -.6) + .8));
+  x.fillStyle = '#211a14'; x.fillRect(X, Y, w, h); x.strokeStyle = C.dim; x.lineWidth = 3; x.strokeRect(X, Y, w, h);
+  for (let i = 0; i < 40; i++) { const on = Math.floor(NOW * 6 + i) % 3 !== 0; x.fillStyle = on ? '#F6D58A' : '#5a4a32'; x.beginPath(); x.arc(X + 15 + i * (w - 30) / 39, Y - 18, 7, 0, 7); x.fill(); x.beginPath(); x.arc(X + 15 + i * (w - 30) / 39, Y + h + 18, 7, 0, 7); x.fill(); }
+  const a = 'KODAK THEATRE', b = 'DOLBY THEATRE'; x.save(); x.beginPath(); x.rect(X, Y, w, h); x.clip();
+  txt(a, W / 2, Y + h / 2 + 40 - k * h, { s: 120, w: 700, al: 'center', c: C.cream, id: k < .5 ? 'mq' : null }); txt(b, W / 2, Y + h / 2 + 40 + (1 - k) * h, { s: 120, w: 700, al: 'center', c: C.cream, id: k >= .5 ? 'mq' : null }); x.restore();
+  txt('HOLLYWOOD · HOME OF THE OSCARS', W / 2, Y + h + 110, { s: 30, f: 'Mono', w: 600, ls: 3, c: C.dim, al: 'center', id: 'mq2' });
+  stamp('MAY 2012', W / 2 + 470, Y - 90, t, AT(s, s.at ?? -.6) + .8, { s: 56, seed: 2, id: 'mq3' });
+}
+function sFloppy(t, s) {   // Sony's 1981 Mavica idea: pictures on a small magnetic disk (illustration)
+  const cx = W / 2, cy = 460, k = eback(seg(t, AT(s, .2), AT(s, .2) + .6)); x.save(); x.translate(cx, cy); x.scale(k, k); x.strokeStyle = C.cream; x.lineWidth = 5;
+  rr(-230, -230, 460, 460, 20); x.stroke(); x.strokeRect(-110, -230, 220, 120); x.beginPath(); x.arc(0, 40, 70, 0, 7); x.stroke(); x.beginPath(); x.arc(0, 40, 20, 0, 7); x.stroke(); x.restore();
+  txt('1981 · AN ELECTRONIC STILL CAMERA THAT STORED PICTURES ON A SMALL DISK', cx, 820, { s: 26, f: 'Mono', w: 600, ls: 1, c: C.dim, al: 'center', id: 'fl' });
+  txt('ILLUSTRATION', cx, 860, { s: 20, f: 'Mono', w: 600, ls: 3, c: C.faint, al: 'center' }); stamp('1981', cx + 400, 260, t, AT(s, .5), { s: 74, seed: 6, id: 'fy' });
+}
+const SCN = { type: sType, myth: sMyth, marquee: sMarquee, floppy: sFloppy, hero: sHero, pair: sPair, strip: sStrip, clip: sClip, portrait: sPortrait, quote: sQuote, counter: sCounter, title: sTitle, black: sBlack, filing: sFiling,
+  dots: sDots, scale: sScale, map: sMap, implode: sImplode, bars: sBars, margin: sMargin, phone: sPhone, board: sBoard, icons: sIcons, line: sLine, pixels: sPixels,
+  cassette: sCassette, tv: sTV, draw: sDraw, layers: sLayers, brownie: sBrownie, envelope: sEnvelope, rounds: sRounds, slides: sSlides, end: sEnd };
+
+// ── frame ───────────────────────────────────────────────────────────────────────────────────────────────
+function drawScene(s, t) { ERAN = s.era ?? 10; ERA = eraOf(ERAN); ground(); (SCN[s.type] || ground)(t, s); }
+function render(t) {
+  NOW = t; x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.filter = 'none'; ground();
+  const i = FILM.scenes.findIndex(s => t >= s.t0 && t < s.t1), s = FILM.scenes[i] || FILM.scenes[FILM.scenes.length - 1]; if (!s) return;
+  const p = FILM.scenes[i - 1];
+  if (p && s.xf && t < s.t0 + s.xf) { drawScene(p, t); const k = seg(t, s.t0, s.t0 + s.xf); x.save(); x.globalAlpha = k; drawScene(s, t); x.restore(); }   // cross-fade
+  else drawScene(s, t);
+  // a short tape-rewind wash into each counter card
+  const nx = FILM.scenes[i + 1]; if (nx && nx.type === 'counter' && t > s.t1 - .5) { const k = seg(t, s.t1 - .5, s.t1); x.save(); x.globalAlpha = k * .9; x.fillStyle = C.bg; x.fillRect(0, 0, W, H); x.restore(); }
+  subs(t);
+}
+window.render = render;
+window.TEXTS = t => { REC = []; render(t); const r = REC; REC = null; return r; };
+(async () => {
+  await Promise.all(['400 40px Sans', '500 40px Sans', '700 40px Sans', '400 40px Mono', '600 40px Mono', 'italic 400 40px SerifI'].map(f => document.fonts.load(f)));
+  try { FILM = await (await fetch('film.json')).json(); } catch (e) { console.warn('no film.json'); }
+  MAP = await (await fetch('assets/map.json')).json(); SIZES = await (await fetch('assets/sizes.json')).json(); CLIPN = await (await fetch('assets/clips.json')).json();
+  SPECK = makeSpeck(); makeGrain();
+  const names = new Set(['eastman_gallia', 'eastman_church', 'ad1889']); JSON.stringify(FILM, (k, v) => { if (typeof v === 'string' && /^[a-z0-9_]+$/.test(v) && v.length > 2) names.add(v); return v; });
+  const PNG = new Set(['patent1', 'patent2', 'nara_camera', 'pat75_1', 'pat75_2', 'cutaway', 'sasson_cam']);
+  const L = []; for (const n of names) { if (SIZES[n]) L.push(load(`assets/${n}.${PNG.has(n) ? 'png' : 'jpg'}`).then(im => { if (im) { im._n = n; IM[n] = im; } }));
+    if (CLIPN[n]) { CLIP[n] = []; for (let i = 1; i <= CLIPN[n]; i++) L.push(load(`assets/film/${n}/${String(i).padStart(3, '0')}.jpg`).then(im => { CLIP[n][i - 1] = im; })); } }
+  await Promise.all(L);
+  window.DUR = FILM.dur; window.READY = true; render(0);
+})();
+</script></body></html>

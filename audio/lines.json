@@ -1,0 +1,1419 @@
+[
+ {
+  "id": "h01",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "On the nineteenth of January, twenty twelve, the company that taught America how to save its memories filed for bankruptcy.",
+  "subs": [
+   "On 19 January 2012, the company that taught America",
+   "how to save its memories filed for bankruptcy."
+  ]
+ },
+ {
+  "id": "h02",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Eastman Kodak. Rochester, New York.",
+  "subs": [
+   "Eastman Kodak. Rochester, New York."
+  ]
+ },
+ {
+  "id": "h03",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "At its peak, more than sixty thousand people in this one city worked for Kodak.",
+  "subs": [
+   "At its peak, more than 60,000 people in this one city",
+   "worked for Kodak."
+  ]
+ },
+ {
+  "id": "h04",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In nineteen fifty, Rochester was home to three hundred thirty-two thousand people. By twenty twenty, it was two hundred eleven thousand.",
+  "subs": [
+   "In 1950, Rochester was home to 332,488 people.",
+   "By 2020, it was 211,328."
+  ]
+ },
+ {
+  "id": "h05",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Most stories start at the beginning. Not this one.",
+  "subs": [
+   "Most stories start at the beginning. Not this one."
+  ]
+ },
+ {
+  "id": "h06",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Tonight we're going to do what Rochester did with every roll of film it ever made. We're going to rewind it.",
+  "subs": [
+   "Tonight we're going to do what Rochester did",
+   "with every roll of film it ever made.",
+   "We're going to rewind it."
+  ]
+ },
+ {
+  "id": "h07",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Ten frames, each one further back, until we reach a young bank clerk who believed anyone should be able to take a picture.",
+  "subs": [
+   "Ten frames, each one further back,",
+   "until we reach a young bank clerk who believed",
+   "anyone should be able to take a picture."
+  ]
+ },
+ {
+  "id": "h08",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And somewhere in the middle, we'll find the moment Kodak held the future in its hands.",
+  "subs": [
+   "And somewhere in the middle, we'll find the moment",
+   "Kodak held the future in its hands."
+  ]
+ },
+ {
+  "id": "h09",
+  "chapter": "hook",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "This is Mill Town.",
+  "subs": [
+   "This is Mill Town."
+  ]
+ },
+ {
+  "id": "a01",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame ten. Twenty twelve.",
+  "subs": [
+   "Frame ten. 2012."
+  ]
+ },
+ {
+  "id": "a02",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "On Thursday, the nineteenth of January, Eastman Kodak asked a federal court in New York for protection under Chapter Eleven.",
+  "subs": [
+   "On Thursday, 19 January, Eastman Kodak asked",
+   "a federal court in New York for protection",
+   "under Chapter 11."
+  ]
+ },
+ {
+  "id": "a03",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "It had lined up nine hundred and fifty million dollars from Citigroup to keep running, and it promised to keep paying its people.",
+  "subs": [
+   "It had lined up $950 million from Citigroup to keep running,",
+   "and it promised to keep paying its people."
+  ]
+ },
+ {
+  "id": "a04",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In the Rochester area, about seven thousand people still worked for Kodak. Thirty years earlier, it had been more than sixty thousand.",
+  "subs": [
+   "In the Rochester area, about 7,000 people still worked for Kodak.",
+   "Thirty years earlier, it had been more than 60,000."
+  ]
+ },
+ {
+  "id": "a05",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And then there were the retirees. Kodak had about thirty-eight thousand of them, and around half still lived in and around Rochester.",
+  "subs": [
+   "And then there were the retirees.",
+   "Kodak had about 38,000 of them,",
+   "and around half still lived in and around Rochester."
+  ]
+ },
+ {
+  "id": "a06",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "They had given their working lives to a company that promised to look after them. Now their health coverage was on the table, in a bankruptcy court.",
+  "subs": [
+   "They had given their working lives to a company",
+   "that promised to look after them.",
+   "Now their health coverage was on the table, in a bankruptcy court."
+  ]
+ },
+ {
+  "id": "a07",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The news kept coming. In February, Kodak said it would stop making digital cameras altogether.",
+  "subs": [
+   "The news kept coming. In February, Kodak said",
+   "it would stop making digital cameras altogether."
+  ]
+ },
+ {
+  "id": "a08",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "A judge let it walk away from its name on the Hollywood theatre where the Oscars are held. By spring, the Kodak Theatre was the Dolby Theatre.",
+  "subs": [
+   "A judge let it walk away from its name on the Hollywood theatre",
+   "where the Oscars are held.",
+   "By spring, the Kodak Theatre was the Dolby Theatre."
+  ]
+ },
+ {
+  "id": "a09",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak's online photo service, holding more than five billion family pictures, was sold for twenty-three point eight million dollars.",
+  "subs": [
+   "Kodak's online photo service, holding more than",
+   "five billion family pictures, was sold for $23.8 million."
+  ]
+ },
+ {
+  "id": "a10",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "That same spring, Facebook paid about a billion dollars for Instagram. An app for sharing photographs, with thirteen employees.",
+  "subs": [
+   "That same spring, Facebook paid about $1 billion for Instagram.",
+   "An app for sharing photographs, with 13 employees."
+  ]
+ },
+ {
+  "id": "a11",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak would come out of bankruptcy in twenty thirteen, much smaller, making printing plates, chemicals and film for industry. It's still in Rochester today.",
+  "subs": [
+   "Kodak came out of bankruptcy in 2013, much smaller,",
+   "making printing plates, chemicals and film for industry.",
+   "It's still in Rochester today."
+  ]
+ },
+ {
+  "id": "a12",
+  "chapter": "f10",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "But how does more than sixty thousand become a few thousand? To understand that, we have to rewind.",
+  "subs": [
+   "But how does more than 60,000 become a few thousand?",
+   "To understand that, we have to rewind."
+  ]
+ },
+ {
+  "id": "b01",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame nine. Twenty ten.",
+  "subs": [
+   "Frame nine. 2010."
+  ]
+ },
+ {
+  "id": "b02",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Parsons, Kansas. A town of about ten thousand people, in the southeast corner of the state.",
+  "subs": [
+   "Parsons, Kansas. A town of about 10,000 people,",
+   "in the southeast corner of the state."
+  ]
+ },
+ {
+  "id": "b03",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "There's a photo lab here called Dwayne's. By twenty ten, it was the last place on Earth that could develop one particular film.",
+  "subs": [
+   "There's a photo lab here called Dwayne's.",
+   "By 2010, it was the last place on Earth",
+   "that could develop one particular film."
+  ]
+ },
+ {
+  "id": "b04",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodachrome.",
+  "subs": [
+   "Kodachrome."
+  ]
+ },
+ {
+  "id": "b05",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak had made it for seventy-four years. It was the film of National Geographic, of family vacations, of slide shows on the living-room wall.",
+  "subs": [
+   "Kodak had made it for 74 years.",
+   "It was the film of National Geographic, of family vacations,",
+   "of slide shows on the living-room wall."
+  ]
+ },
+ {
+  "id": "b06",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Its colours were famous for lasting. Kept in the dark, a Kodachrome slide could hold its colour for decades longer than most other films.",
+  "subs": [
+   "Its colours were famous for lasting.",
+   "Kept in the dark, a Kodachrome slide could hold its colour",
+   "for decades longer than most other films."
+  ]
+ },
+ {
+  "id": "b07",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "But it was hard to develop. It needed its own long, complicated process, with its own chemicals, and only a few labs in the world ever ran it.",
+  "subs": [
+   "But it was hard to develop.",
+   "It needed its own long, complicated process,",
+   "with its own chemicals,",
+   "and only a few labs in the world ever ran it."
+  ]
+ },
+ {
+  "id": "b08",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "As people stopped shooting it, those labs closed, one by one. In two thousand nine, Kodak stopped making it.",
+  "subs": [
+   "As people stopped shooting it, those labs closed, one by one.",
+   "In 2009, Kodak stopped making it."
+  ]
+ },
+ {
+  "id": "b09",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak gave one of the very last rolls to the photographer Steve McCurry, who had made some of his most famous pictures on it. He shot it, and sent it to Parsons.",
+  "subs": [
+   "Kodak gave one of the very last rolls to the photographer",
+   "Steve McCurry, who had made some of his most famous",
+   "pictures on it. He shot it, and sent it to Parsons."
+  ]
+ },
+ {
+  "id": "b10",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And then everyone else sent theirs. Rolls came in from all over the country, and from overseas. Some had sat in drawers for years.",
+  "subs": [
+   "And then everyone else sent theirs.",
+   "Rolls came in from all over the country, and from overseas.",
+   "Some had sat in drawers for years."
+  ]
+ },
+ {
+  "id": "b11",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "On the thirtieth of December, twenty ten, Dwayne's took in its last rolls. The machine ran its final batch that January.",
+  "subs": [
+   "On 30 December 2010, Dwayne's took in its last rolls.",
+   "The machine ran its final batch that January."
+  ]
+ },
+ {
+  "id": "b12",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And when it stopped, every roll of Kodachrome still sitting in a camera somewhere stayed there, undeveloped, for good.",
+  "subs": [
+   "And when it stopped, every roll of Kodachrome",
+   "still sitting in a camera somewhere stayed there,",
+   "undeveloped, for good."
+  ]
+ },
+ {
+  "id": "b13",
+  "chapter": "f9",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "A film people loved, made in Rochester for three generations. So why did a film this loved stop selling?",
+  "subs": [
+   "A film people loved, made in Rochester for three generations.",
+   "So why did a film this loved stop selling?"
+  ]
+ },
+ {
+  "id": "c01",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame eight. Two thousand seven.",
+  "subs": [
+   "Frame eight. 2007."
+  ]
+ },
+ {
+  "id": "c02",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Saturday, the thirtieth of June. Lake Avenue, on the north side of Rochester. People have come out early to watch, and a local TV station is carrying it live.",
+  "subs": [
+   "Saturday, 30 June. Lake Avenue, on the north side of Rochester.",
+   "People have come out early to watch,",
+   "and a local TV station is carrying it live."
+  ]
+ },
+ {
+  "id": "c03",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "This is Kodak Park. The company's great film factory. About thirteen hundred acres, with its own railroad, its own fire department, its own power plant.",
+  "subs": [
+   "This is Kodak Park. The company's great film factory.",
+   "About 1,300 acres, with its own railroad,",
+   "its own fire department, its own power plant."
+  ]
+ },
+ {
+  "id": "c04",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "At eight o'clock in the morning, Building Nine comes down.",
+  "subs": [
+   "At eight o'clock in the morning, Building 9 comes down."
+  ]
+ },
+ {
+  "id": "c05",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The next morning it's Building Twenty-Three, the blue building north of Ridge Road. Almost half a million square feet.",
+  "subs": [
+   "The next morning it's Building 23, the blue building",
+   "north of Ridge Road. Almost half a million square feet."
+  ]
+ },
+ {
+  "id": "c06",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "More buildings came down that autumn, and in the years after. Kodak had been clearing out the parts of the park it no longer needed since two thousand three.",
+  "subs": [
+   "More buildings came down that autumn, and in the years after.",
+   "Kodak had been clearing out the parts of the park",
+   "it no longer needed since 2003."
+  ]
+ },
+ {
+  "id": "c07",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Some of the people watching had worked inside those buildings. One neighbour in Maplewood told WXXI News that they'd rather see the buildings standing than the grass, because that was employment.",
+  "subs": [
+   "Some of the people watching had worked inside those buildings.",
+   "One neighbour in Maplewood told WXXI News they'd rather",
+   "see the buildings standing than the grass,",
+   "because that was employment."
+  ]
+ },
+ {
+  "id": "q01",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "I got to see one. I didn't want to see any more.",
+  "subs": [
+   ""
+  ],
+  "quote": {
+   "who": "A Maplewood neighbour",
+   "role": "on the 2007 implosions",
+   "src": "WXXI NEWS · \"MAPLEWOOD RESIDENTS REMINISCE ABOUT KODAK'S GLORY DAYS\""
+  }
+ },
+ {
+  "id": "c08",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In November two thousand eight, Kodak Park got a new name. Eastman Business Park. Room for other companies.",
+  "subs": [
+   "In November 2008, Kodak Park got a new name.",
+   "Eastman Business Park. Room for other companies."
+  ]
+ },
+ {
+  "id": "c09",
+  "chapter": "f8",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "A company doesn't blow up its own factories unless it has stopped needing them. So what happened to all that film?",
+  "subs": [
+   "A company doesn't blow up its own factories",
+   "unless it has stopped needing them.",
+   "So what happened to all that film?"
+  ]
+ },
+ {
+  "id": "d01",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame seven. Two thousand four.",
+  "subs": [
+   "Frame seven. 2004."
+  ]
+ },
+ {
+  "id": "d02",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Here's the part of the story most people get wrong.",
+  "subs": [
+   "Here's the part of the story most people get wrong."
+  ]
+ },
+ {
+  "id": "d03",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The usual version goes like this. Kodak invented the digital camera, got scared, and hid it. And when digital came, Kodak was left behind.",
+  "subs": [
+   "The usual version goes like this.",
+   "Kodak invented the digital camera, got scared, and hid it.",
+   "And when digital came, Kodak was left behind."
+  ]
+ },
+ {
+  "id": "d04",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "But look at two thousand four.",
+  "subs": [
+   "But look at 2004."
+  ]
+ },
+ {
+  "id": "d05",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak had been selling simple digital cameras to ordinary families since two thousand one. They were called EasyShare. You set the camera in its dock, pressed one button, and your pictures went to the computer, or to a little printer.",
+  "subs": [
+   "Kodak had been selling simple digital cameras",
+   "to ordinary families since 2001. They were called EasyShare.",
+   "You set the camera in its dock, pressed one button,",
+   "and your pictures went to the computer, or to a little printer."
+  ]
+ },
+ {
+  "id": "d06",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And in two thousand four, Kodak sold more digital cameras in the United States than anyone. More than Sony. More than Canon.",
+  "subs": [
+   "And in 2004, Kodak sold more digital cameras",
+   "in the United States than anyone.",
+   "More than Sony. More than Canon."
+  ]
+ },
+ {
+  "id": "d07",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In two thousand five, it did it again.",
+  "subs": [
+   "In 2005, it did it again."
+  ]
+ },
+ {
+  "id": "d08",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "So if Kodak was number one, why did it still fall?",
+  "subs": [
+   "So if Kodak was number one, why did it still fall?"
+  ]
+ },
+ {
+  "id": "d09",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The honest answer is about money. For a hundred years, Kodak didn't really make its money on cameras. It made it on film. On every roll you bought, and every print you made.",
+  "subs": [
+   "The honest answer is about money.",
+   "For a hundred years, Kodak didn't really",
+   "make its money on cameras.",
+   "It made it on film.",
+   "On every roll you bought, and every print you made."
+  ]
+ },
+ {
+  "id": "d10",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Film was a wonderful business. Kodak's margins on it ran to around seventy percent.",
+  "subs": [
+   "Film was a wonderful business.",
+   "Kodak's margins on it ran to around 70%."
+  ]
+ },
+ {
+  "id": "d11",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "A digital camera was different. You bought it once, and then the pictures were free. Dozens of companies in Asia made cameras too, so prices fell every year. Kodak earned very little on each one, and sold some at a loss.",
+  "subs": [
+   "A digital camera was different.",
+   "You bought it once, and then the pictures were free.",
+   "Dozens of companies in Asia made cameras too,",
+   "so prices fell every year.",
+   "Kodak earned very little on each one, and sold some at a loss."
+  ]
+ },
+ {
+  "id": "d12",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "So the better Kodak did in digital, the faster it ate the business that actually paid the bills.",
+  "subs": [
+   "So the better Kodak did in digital, the faster it ate",
+   "the business that actually paid the bills."
+  ]
+ },
+ {
+  "id": "d13",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "That April, after seventy-four years, Kodak was dropped from the Dow Jones Industrial Average.",
+  "subs": [
+   "That April, after 74 years,",
+   "Kodak was dropped from the Dow Jones Industrial Average."
+  ]
+ },
+ {
+  "id": "d14",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And in two thousand seven, the camera moved into the telephone. Within a few years, most people stopped buying a camera at all.",
+  "subs": [
+   "And in 2007, the camera moved into the telephone.",
+   "Within a few years, most people stopped buying a camera at all."
+  ]
+ },
+ {
+  "id": "d15",
+  "chapter": "f7",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "To see how big that film business had been, we have to go back to the very top.",
+  "subs": [
+   "To see how big that film business had been,",
+   "we have to go back to the very top."
+  ]
+ },
+ {
+  "id": "e01",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame six. Nineteen eighty-two.",
+  "subs": [
+   "Frame six. 1982."
+  ]
+ },
+ {
+  "id": "e02",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "This is Kodak at the top of the world.",
+  "subs": [
+   "This is Kodak at the top of the world."
+  ]
+ },
+ {
+  "id": "e03",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In Rochester alone, the company employs sixty thousand, four hundred people. More than it ever will again.",
+  "subs": [
+   "In Rochester alone, the company employs 60,400 people.",
+   "More than it ever will again."
+  ]
+ },
+ {
+  "id": "e04",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "For a lot of families here, Kodak isn't just a job. It's where your father works, and your aunt, and maybe, one day, you.",
+  "subs": [
+   "For a lot of families here, Kodak isn't just a job.",
+   "It's where your father works, and your aunt,",
+   "and maybe, one day, you."
+  ]
+ },
+ {
+  "id": "e05",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Every March, Kodak pays its workers a bonus on top of their wages, a share of the profits. They call it the wage dividend. Rochester plans its spring around it.",
+  "subs": [
+   "Every March, Kodak pays its workers a bonus on top of their wages,",
+   "a share of the profits. They call it the wage dividend.",
+   "Rochester plans its spring around it."
+  ]
+ },
+ {
+  "id": "e06",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Across America, Kodak sells about nine of every ten rolls of film, and more than eight of every ten cameras. Those were the numbers in nineteen seventy-six.",
+  "subs": [
+   "Across America, Kodak sells about 9 of every 10 rolls of film,",
+   "and more than 8 of every 10 cameras.",
+   "Those were the numbers in 1976."
+  ]
+ },
+ {
+  "id": "e07",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Rochester has Xerox, and Bausch and Lomb, too. It calls itself the World's Image Centre.",
+  "subs": [
+   "Rochester has Xerox, and Bausch & Lomb, too.",
+   "It calls itself the World's Image Centre."
+  ]
+ },
+ {
+  "id": "e08",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The year before, in nineteen eighty-one, Sony showed off a camera that stored pictures as electronic signals, on a little disk. Kodak noticed.",
+  "subs": [
+   "The year before, in 1981, Sony showed off a camera",
+   "that stored pictures as electronic signals,",
+   "on a little disk. Kodak noticed."
+  ]
+ },
+ {
+  "id": "e09",
+  "chapter": "f6",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Because something like it already existed, inside Kodak. It had been built in Rochester, seven years earlier.",
+  "subs": [
+   "Because something like it already existed, inside Kodak.",
+   "It had been built in Rochester, seven years earlier."
+  ]
+ },
+ {
+  "id": "g01",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame five. Nineteen seventy-five.",
+  "subs": [
+   "Frame five. 1975."
+  ]
+ },
+ {
+  "id": "g02",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Steve Sasson is a young electrical engineer. He joined Kodak two years ago, straight out of school.",
+  "subs": [
+   "Steve Sasson is a young electrical engineer.",
+   "He joined Kodak two years ago, straight out of school."
+  ]
+ },
+ {
+  "id": "g03",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "His supervisor, Gareth Lloyd, gives him what sounds like a small job. See whether a new kind of electronic chip, a charge-coupled device, can capture a picture.",
+  "subs": [
+   "His supervisor, Gareth Lloyd,",
+   "gives him what sounds like a small job.",
+   "See whether a new kind of electronic chip,",
+   "a charge-coupled device, can capture a picture."
+  ]
+ },
+ {
+  "id": "g04",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Sasson builds a camera out of whatever he can find. The lens comes from a Kodak movie camera. The pictures go onto an ordinary cassette tape. It runs on sixteen double-A batteries.",
+  "subs": [
+   "Sasson builds a camera out of whatever he can find.",
+   "The lens comes from a Kodak movie camera.",
+   "The pictures go onto an ordinary cassette tape.",
+   "It runs on 16 AA batteries."
+  ]
+ },
+ {
+  "id": "g05",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "It weighs eight pounds. It's about the size of a toaster.",
+  "subs": [
+   "It weighs 8 pounds. It's about the size of a toaster."
+  ]
+ },
+ {
+  "id": "g06",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In December, nineteen seventy-five, it takes its first picture. Black and white. One hundred dots by one hundred dots. A hundredth of a megapixel.",
+  "subs": [
+   "In December 1975, it takes its first picture.",
+   "Black and white. 100 dots by 100 dots.",
+   "A hundredth of a megapixel."
+  ]
+ },
+ {
+  "id": "g07",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "It takes twenty-three seconds to record that one picture onto the tape.",
+  "subs": [
+   "It takes 23 seconds to record that one picture onto the tape."
+  ]
+ },
+ {
+  "id": "g08",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "To see it, you put the tape into a playback machine, and the picture comes up on a television set.",
+  "subs": [
+   "To see it, you put the tape into a playback machine,",
+   "and the picture comes up on a television set."
+  ]
+ },
+ {
+  "id": "g09",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Sasson shows it to room after room of Kodak managers. He calls it filmless photography. In a company that lives on film.",
+  "subs": [
+   "Sasson shows it to room after room of Kodak managers.",
+   "He calls it filmless photography.",
+   "In a company that lives on film."
+  ]
+ },
+ {
+  "id": "q02",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "That's cute, but don't tell anyone about it.",
+  "subs": [
+   ""
+  ],
+  "quote": {
+   "who": "Steve Sasson",
+   "role": "recalling management's reaction, 1975–76",
+   "src": "THE NEW YORK TIMES · 2 MAY 2008"
+  }
+ },
+ {
+  "id": "g10",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "That's how he remembered it, years later. And to be fair to Kodak, this was not a product. Sasson himself guessed it would be fifteen or twenty years before pictures like this could compete with film.",
+  "subs": [
+   "That's how he remembered it, years later.",
+   "And to be fair to Kodak, this was not a product.",
+   "Sasson himself guessed it would be 15 or 20 years",
+   "before pictures like this could compete with film."
+  ]
+ },
+ {
+  "id": "g11",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak patented it. The patent was granted in nineteen seventy-eight. And Kodak's engineers kept working on digital pictures, quietly, for years.",
+  "subs": [
+   "Kodak patented it. The patent was granted in 1978.",
+   "And Kodak's engineers kept working on digital pictures,",
+   "quietly, for years."
+  ]
+ },
+ {
+  "id": "g12",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "But in every meeting, the same question hung in the air. Why would a company that sells film build something that doesn't need any?",
+  "subs": [
+   "But in every meeting, the same question hung in the air.",
+   "Why would a company that sells film",
+   "build something that doesn't need any?"
+  ]
+ },
+ {
+  "id": "g13",
+  "chapter": "f5",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "How did film get so big that nobody wanted to replace it?",
+  "subs": [
+   "How did film get so big that nobody wanted to replace it?"
+  ]
+ },
+ {
+  "id": "j01",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame four. Nineteen fifty.",
+  "subs": [
+   "Frame four. 1950."
+  ]
+ },
+ {
+  "id": "j02",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The census counts three hundred thirty-two thousand, four hundred and eighty-eight people in Rochester. The most it will ever have.",
+  "subs": [
+   "The census counts 332,488 people in Rochester.",
+   "The most it will ever have."
+  ]
+ },
+ {
+  "id": "j03",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The war is over. America is having babies, buying cars, taking vacations. And Kodak sells the pictures of all of it.",
+  "subs": [
+   "The war is over. America is having babies,",
+   "buying cars, taking vacations.",
+   "And Kodak sells the pictures of all of it."
+  ]
+ },
+ {
+  "id": "j04",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "A Brownie Hawkeye camera. A yellow box of film from the drugstore. Prints that come back in an envelope a few days later. Colour slides. Home movies.",
+  "subs": [
+   "A Brownie Hawkeye camera. A yellow box of film from the drugstore.",
+   "Prints that come back in an envelope a few days later.",
+   "Colour slides. Home movies."
+  ]
+ },
+ {
+  "id": "j05",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In Rochester, Kodak is the biggest employer by far. And the money it pays out keeps the whole city going.",
+  "subs": [
+   "In Rochester, Kodak is the biggest employer by far.",
+   "And the money it pays out keeps the whole city going."
+  ]
+ },
+ {
+  "id": "j06",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "A few years later, in nineteen sixty-three, the city made a film about itself. Look at it. This is the Rochester Kodak built.",
+  "subs": [
+   "A few years later, in 1963, the city made a film about itself.",
+   "Look at it. This is the Rochester Kodak built."
+  ]
+ },
+ {
+  "id": "j07",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Department stores on Main Street. A brand-new indoor shopping centre downtown, Midtown Plaza, one of the first in any American city.",
+  "subs": [
+   "Department stores on Main Street.",
+   "A brand-new indoor shopping centre downtown, Midtown Plaza,",
+   "one of the first in any American city."
+  ]
+ },
+ {
+  "id": "j08",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The Philharmonic in the Eastman Theatre. The University of Rochester. The Eastman School of Music. Kodak's founder's name is everywhere.",
+  "subs": [
+   "The Philharmonic in the Eastman Theatre.",
+   "The University of Rochester. The Eastman School of Music.",
+   "Kodak's founder's name is everywhere."
+  ]
+ },
+ {
+  "id": "j09",
+  "chapter": "f4",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "He paid for a lot of it. But he never saw this city at its height. So who was the man who built a city around a box camera?",
+  "subs": [
+   "He paid for a lot of it. But he never saw this city at its height.",
+   "So who was the man who built a city around a box camera?"
+  ]
+ },
+ {
+  "id": "k01",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame three. Nineteen thirty-two.",
+  "subs": [
+   "Frame three. 1932."
+  ]
+ },
+ {
+  "id": "k02",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "George Eastman is seventy-seven. He never married. He lives in a mansion on East Avenue, where an organist plays for him at breakfast.",
+  "subs": [
+   "George Eastman is 77. He never married.",
+   "He lives in a mansion on East Avenue,",
+   "where an organist plays for him at breakfast."
+  ]
+ },
+ {
+  "id": "k03",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And for years he has been giving his fortune away. To the University of Rochester. To MIT, under a made-up name, Mister Smith. To Tuskegee and Hampton, two of the great Black colleges of the South.",
+  "subs": [
+   "And for years he has been giving his fortune away.",
+   "To the University of Rochester.",
+   "To MIT, under a made-up name, Mr. Smith.",
+   "To Tuskegee and Hampton,",
+   "two of the great Black colleges of the South."
+  ]
+ },
+ {
+  "id": "k04",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "To dental clinics for the children of Rochester. And to music. A school of music, and a theatre with more than three thousand seats.",
+  "subs": [
+   "To dental clinics for the children of Rochester.",
+   "And to music. A school of music,",
+   "and a theatre with more than 3,000 seats."
+  ]
+ },
+ {
+  "id": "k05",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "His gifts came to more than seventy-five million dollars.",
+  "subs": [
+   "His gifts came to more than $75 million."
+  ]
+ },
+ {
+  "id": "k06",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In March nineteen thirty-two, after two years of a painful illness of the spine, George Eastman took his own life. He was seventy-seven.",
+  "subs": [
+   "In March 1932, after two years of a painful illness of the spine,",
+   "George Eastman took his own life. He was 77."
+  ]
+ },
+ {
+  "id": "k07",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Three years later, his company brought out something he had wanted for a very long time. Colour.",
+  "subs": [
+   "Three years later, his company brought out something",
+   "he had wanted for a very long time. Colour."
+  ]
+ },
+ {
+  "id": "k08",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodachrome. And it was invented, of all people, by two musicians.",
+  "subs": [
+   "Kodachrome. And it was invented, of all people, by two musicians."
+  ]
+ },
+ {
+  "id": "k09",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Leopold Mannes was a concert pianist. Leopold Godowsky Junior was a violinist. They had been chasing colour film since they were schoolboys in New York.",
+  "subs": [
+   "Leopold Mannes was a concert pianist.",
+   "Leopold Godowsky Jr. was a violinist.",
+   "They had been chasing colour film",
+   "since they were schoolboys in New York."
+  ]
+ },
+ {
+  "id": "k10",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak's research chief, Kenneth Mees, brought them to Rochester in nineteen thirty and gave them a laboratory.",
+  "subs": [
+   "Kodak's research chief, Kenneth Mees, brought them to Rochester",
+   "in 1930 and gave them a laboratory."
+  ]
+ },
+ {
+  "id": "k11",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Working in the dark, the story goes, they timed their developing by whistling Brahms.",
+  "subs": [
+   "Working in the dark, the story goes,",
+   "they timed their developing by whistling Brahms."
+  ]
+ },
+ {
+  "id": "k12",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In nineteen thirty-five, Kodachrome went on sale. The first colour film that ordinary people could really use. George Eastman never saw it.",
+  "subs": [
+   "In 1935, Kodachrome went on sale.",
+   "The first colour film that ordinary people could really use.",
+   "George Eastman never saw it."
+  ]
+ },
+ {
+  "id": "k13",
+  "chapter": "f3",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "What he left behind was a company people stayed in for their whole lives. What kind of boss builds a company like that?",
+  "subs": [
+   "What he left behind was a company",
+   "people stayed in for their whole lives.",
+   "What kind of boss builds a company like that?"
+  ]
+ },
+ {
+  "id": "m01",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame two. Nineteen hundred.",
+  "subs": [
+   "Frame two. 1900."
+  ]
+ },
+ {
+  "id": "m02",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "February, nineteen hundred. Kodak puts a new camera on sale. It's a cardboard box covered in imitation leather, with a simple lens. It costs one dollar.",
+  "subs": [
+   "February 1900. Kodak puts a new camera on sale.",
+   "It's a cardboard box covered in imitation leather,",
+   "with a simple lens. It costs one dollar."
+  ]
+ },
+ {
+  "id": "m03",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "It's called the Brownie, and it's made for children. The name came from the Brownies, little cartoon characters every child in America knew.",
+  "subs": [
+   "It's called the Brownie, and it's made for children.",
+   "The name came from the Brownies,",
+   "little cartoon characters every child in America knew."
+  ]
+ },
+ {
+  "id": "m04",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "In its first year, Kodak sold about a hundred and fifty thousand of them.",
+  "subs": [
+   "In its first year, Kodak sold about 150,000 of them."
+  ]
+ },
+ {
+  "id": "m05",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Now anyone could take a picture. And every picture needed film. And the film came from Rochester.",
+  "subs": [
+   "Now anyone could take a picture. And every picture needed film.",
+   "And the film came from Rochester."
+  ]
+ },
+ {
+  "id": "m06",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "So Kodak Park grew, and grew. These photographs come from a book Kodak printed for its shareholders in nineteen oh six. Look at the people.",
+  "subs": [
+   "So Kodak Park grew, and grew.",
+   "These photographs come from a book Kodak printed",
+   "for its shareholders in 1906. Look at the people."
+  ]
+ },
+ {
+  "id": "m07",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And in nineteen twelve, Eastman did something very few employers in America did. He shared the profits with the people who made them.",
+  "subs": [
+   "And in 1912, Eastman did something",
+   "very few employers in America did.",
+   "He shared the profits with the people who made them."
+  ]
+ },
+ {
+  "id": "m08",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The first wage dividend paid every eligible worker two percent of everything they had earned over the past five years.",
+  "subs": [
+   "The first wage dividend paid every eligible worker 2%",
+   "of everything they had earned over the past five years."
+  ]
+ },
+ {
+  "id": "m09",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Later came a savings and loan to help workers buy houses, and then pensions, and life insurance.",
+  "subs": [
+   "Later came a savings and loan to help workers buy houses,",
+   "and then pensions, and life insurance."
+  ]
+ },
+ {
+  "id": "m10",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Eastman saw it as good business. People who share in a company stay with it. And in Rochester, they did, for generations.",
+  "subs": [
+   "Eastman saw it as good business.",
+   "People who share in a company stay with it.",
+   "And in Rochester, they did, for generations."
+  ]
+ },
+ {
+  "id": "m11",
+  "chapter": "f2",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "But where did a one-dollar camera come from?",
+  "subs": [
+   "But where did a one-dollar camera come from?"
+  ]
+ },
+ {
+  "id": "p01",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Frame one. Eighteen eighty-eight.",
+  "subs": [
+   "Frame one. 1888."
+  ]
+ },
+ {
+  "id": "p02",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "George Eastman grew up poor. His father died when he was a small boy. At fourteen he left school and went to work as an office boy, for three dollars a week.",
+  "subs": [
+   "George Eastman grew up poor.",
+   "His father died when he was a small boy.",
+   "At 14 he left school and went to work as an office boy,",
+   "for $3 a week."
+  ]
+ },
+ {
+  "id": "p03",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Later he became a clerk at a savings bank in Rochester. And in eighteen seventy-seven he bought his first camera, for a trip he never took.",
+  "subs": [
+   "Later he became a clerk at a savings bank in Rochester.",
+   "And in 1877 he bought his first camera,",
+   "for a trip he never took."
+  ]
+ },
+ {
+  "id": "p04",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Taking a picture then was a chemistry lesson. Heavy glass plates, chemicals, a tent for a darkroom, a tripod. What Eastman called a pack-horse load.",
+  "subs": [
+   "Taking a picture then was a chemistry lesson.",
+   "Heavy glass plates, chemicals, a tent for a darkroom, a tripod.",
+   "What Eastman called a pack-horse load."
+  ]
+ },
+ {
+  "id": "p05",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "He spent his nights experimenting in his mother's kitchen. In eighteen eighty-one he started a company making dry plates, ready to use.",
+  "subs": [
+   "He spent his nights experimenting in his mother's kitchen.",
+   "In 1881 he started a company making dry plates, ready to use."
+  ]
+ },
+ {
+  "id": "p06",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Then he went further. He replaced the glass with a roll of film.",
+  "subs": [
+   "Then he went further. He replaced the glass with a roll of film."
+  ]
+ },
+ {
+  "id": "p07",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And in eighteen eighty-eight, he put that roll inside a small box camera, and gave it a name he made up himself. It started and ended with his favourite letter.",
+  "subs": [
+   "And in 1888, he put that roll inside a small box camera,",
+   "and gave it a name he made up himself.",
+   "It started and ended with his favourite letter."
+  ]
+ },
+ {
+  "id": "q03",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The letter K had been a favorite with me. It seems a strong, incisive sort of letter.",
+  "subs": [
+   ""
+  ],
+  "quote": {
+   "who": "George Eastman",
+   "role": "on the name \"Kodak\"",
+   "src": "INTERVIEW WITH SAMUEL CROWTHER · SYSTEM MAGAZINE · 1920"
+  }
+ },
+ {
+  "id": "p08",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The Kodak cost twenty-five dollars. It came loaded with enough film for a hundred pictures. Little round ones.",
+  "subs": [
+   "The Kodak cost $25.",
+   "It came loaded with enough film for 100 pictures.",
+   "Little round ones."
+  ]
+ },
+ {
+  "id": "p09",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "When the roll was finished, you didn't open the camera. You mailed the whole thing back to Rochester.",
+  "subs": [
+   "When the roll was finished, you didn't open the camera.",
+   "You mailed the whole thing back to Rochester."
+  ]
+ },
+ {
+  "id": "p10",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "There they developed your pictures, printed them, loaded fresh film, and sent the camera home to you. For ten dollars.",
+  "subs": [
+   "There they developed your pictures, printed them,",
+   "loaded fresh film, and sent the camera home to you.",
+   "For $10."
+  ]
+ },
+ {
+  "id": "p11",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "He wanted a camera to be as easy to use as a pencil. For anybody. And he put the whole idea into eight words.",
+  "subs": [
+   "He wanted a camera to be as easy to use as a pencil.",
+   "For anybody. And he put the whole idea into eight words."
+  ]
+ },
+ {
+  "id": "p12",
+  "chapter": "f1",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "You press the button. We do the rest.",
+  "subs": [
+   "You press the button. We do the rest."
+  ]
+ },
+ {
+  "id": "r01",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Now, let's fast-forward.",
+  "subs": [
+   "Now, let's fast-forward."
+  ]
+ },
+ {
+  "id": "r02",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Rochester today is a city of about two hundred and eleven thousand people. Smaller. Still here.",
+  "subs": [
+   "Rochester today is a city of about 211,000 people.",
+   "Smaller. Still here."
+  ]
+ },
+ {
+  "id": "r03",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak is still here too, in its tower on State Street. It still makes film, for movie directors, and for a new generation of photographers who have come back to it.",
+  "subs": [
+   "Kodak is still here too, in its tower on State Street.",
+   "It still makes film, for movie directors,",
+   "and for a new generation of photographers",
+   "who have come back to it."
+  ]
+ },
+ {
+  "id": "r04",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "The old Kodak Park is Eastman Business Park now, home to more than a hundred companies. Some of them were started by people who used to work for Kodak.",
+  "subs": [
+   "The old Kodak Park is Eastman Business Park now,",
+   "home to more than a hundred companies.",
+   "Some were started by people who used to work for Kodak."
+  ]
+ },
+ {
+  "id": "r05",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Steve Sasson, the young man with the toaster-sized camera, was given the National Medal of Technology and Innovation at the White House. Today there's a camera in almost every pocket on Earth.",
+  "subs": [
+   "Steve Sasson, the young man with the toaster-sized camera,",
+   "was given the National Medal of Technology and Innovation.",
+   "Today there's a camera in almost every pocket on Earth."
+  ]
+ },
+ {
+  "id": "r06",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "And somewhere in your house, in a closet or under a bed, there's probably a shoebox. Full of Kodak prints. People you love, holding still, exactly as they were.",
+  "subs": [
+   "And somewhere in your house, in a closet or under a bed,",
+   "there's probably a shoebox. Full of Kodak prints.",
+   "People you love, holding still, exactly as they were."
+  ]
+ },
+ {
+  "id": "r07",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Kodak gave us that. And for a hundred years, it gave one city a way to live.",
+  "subs": [
+   "Kodak gave us that.",
+   "And for a hundred years, it gave one city a way to live."
+  ]
+ },
+ {
+  "id": "r08",
+  "chapter": "end",
+  "voice": "elevenlabs_0dPqNXnhg2bmxQv1WKDp",
+  "text": "Did your family work for Kodak, or keep a shoebox of Kodak prints? Tell us in the comments.",
+  "subs": [
+   "Did your family work for Kodak, or keep a shoebox of Kodak prints?",
+   "Tell us in the comments."
+  ]
+ }
+]
