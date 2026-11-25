@@ -560,13 +560,15 @@ function sBrownie(t, s) {   // the $1 Brownie assembles: box, lens, winding key,
 function sEnvelope(t, s) {   // the first wage dividend
   const cx = W / 2, cy = 560, a0 = AT(s, .2), o = eio(seg(t, a0 + .4, a0 + 1)), up = eio(seg(t, a0 + 1, a0 + 1.8));
   if (s.img) { cover(IM[s.img], 0, 0, W, H, { z: 1.12, grade: 'b' }); shade(0, 0, W, H, .78); }
+  const flap = () => { x.save(); x.translate(cx, cy - 60); x.scale(1, lerp(1, -1, o)); x.fillStyle = o > .5 ? '#BFA97E' : '#CDB98F'; x.beginPath(); x.moveTo(-400, 0); x.lineTo(0, 230); x.lineTo(400, 0); x.closePath(); x.fill(); x.restore(); };
   x.save(); x.fillStyle = '#C9B48A'; x.fillRect(cx - 400, cy - 60, 800, 420); // back
+  if (o > .5) flap();   // once it has folded open, the flap lies behind the letter that rises out
   x.save(); x.translate(0, -up * 330); paperCard(cx - 360, cy - 30, 720, 360, t); txt('EASTMAN KODAK COMPANY', cx, cy + 30, { s: 30, w: 700, c: C.ink, al: 'center', ls: 2 });
   txt('WAGE DIVIDEND', cx, cy + 100, { s: 60, w: 700, c: C.ink, al: 'center', id: 'ew' }); txt('2% of your wages for the past five years', cx, cy + 160, { s: 30, it: 1, c: C.ink, al: 'center', id: 'ex' });
   x.restore();
   x.fillStyle = '#D9C59C'; x.beginPath(); x.moveTo(cx - 400, cy - 60); x.lineTo(cx, cy + 160); x.lineTo(cx + 400, cy - 60); x.lineTo(cx + 400, cy + 360); x.lineTo(cx - 400, cy + 360); x.closePath(); x.fill();
-  x.save(); x.translate(cx, cy - 60); x.scale(1, lerp(1, -1, o)); x.fillStyle = o > .5 ? '#BFA97E' : '#CDB98F'; x.beginPath(); x.moveTo(-400, 0); x.lineTo(0, 230); x.lineTo(400, 0); x.closePath(); x.fill(); x.restore();
-  x.restore(); stamp('1912', cx + 470, cy - 300, t, a0 + .2, { s: 80, seed: 3, id: 'ey' }); if (s.tag) srcTag(s.tag, 60, 60, 1);
+  if (o <= .5) flap();  // closed (and while folding over the top): in front
+  x.restore(); stamp('1912', cx + 610, cy - 300, t, a0 + .2, { s: 80, seed: 3, id: 'ey' }); if (s.tag) srcTag(s.tag, 60, 60, 1);
 }
 function sRounds(t, s) {   // the first Kodak: 100 round pictures on one roll
   const a0 = AT(s, s.at ?? .1), k = seg(t, a0, AT(s, s.until ?? -.4)), n = Math.floor(k * 100), r = 34, X0 = W / 2 - 4.5 * 84, Y0 = 130;
