@@ -237,7 +237,6 @@ for a, b in zip(scenes, scenes[1:] + [None]): a['t1'] = b['t0'] if b else DURT
 # negative 'at' values in scenes started for a line refer to that line's duration (renderer: AT uses vd); for scenes started 0.25 s early,
 # positive 'at' values are seconds after the scene start — fine.
 CREDITS = ['What Happened to Rochester? The City Kodak Built',
-           'NARRATION · STORYTELLER OXLEY (ELEVENLABS VIA AI33)',
            'PICTURES · LIBRARY OF CONGRESS · NATIONAL ARCHIVES · INTERNET ARCHIVE · BNF GALLICA · NYPL',
            'FILM · ROCHESTER: A CITY OF QUALITY (1963) · PRELINGER ARCHIVES · KODAK TOWER TIME-LAPSE · BEACHFRONT B-ROLL (CC BY 3.0)',
            'PHOTOGRAPHS · WIKIMEDIA COMMONS CONTRIBUTORS, CREDITED ON SCREEN (CC BY / CC BY-SA)',
