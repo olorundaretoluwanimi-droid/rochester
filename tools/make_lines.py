@@ -87,7 +87,7 @@ L('f8', 'c05', "The next morning it's Building Twenty-Three, the blue building n
   "The next morning it's Building 23, the blue building", "north of Ridge Road. Almost half a million square feet.")
 L('f8', 'c06', "More buildings came down that autumn, and in the years after. Kodak had been clearing out the parts of the park it no longer needed since two thousand three.",
   "More buildings came down that autumn, and in the years after.", "Kodak had been clearing out the parts of the park", "it no longer needed since 2003.")
-L('f8', 'c07', "Some of the people watching had worked inside those buildings. One neighbour in Maplewood told WXXI News that they'd rather see the buildings standing than the grass, because that was employment.",
+L('f8', 'c07', "Some of the people watching had worked inside those buildings. One neighbour in Maplewood told W-X-X-I News that they'd rather see the buildings standing than the grass, because that was employment.",
   "Some of the people watching had worked inside those buildings.", "One neighbour in Maplewood told WXXI News they'd rather", "see the buildings standing than the grass,", "because that was employment.")
 L('f8', 'q01', "I got to see one. I didn't want to see any more.", "")
 L('f8', 'c08', "In November two thousand eight, Kodak Park got a new name. Eastman Business Park. Room for other companies.",
@@ -98,7 +98,7 @@ L('f8', 'c09', "A company doesn't blow up its own factories unless it has stoppe
 # ── frame 7 · 2004 ──
 L('f7', 'd01', "Frame seven. Two thousand four.", "Frame seven. 2004.")
 L('f7', 'd02', "Here's the part of the story most people get wrong.", "Here's the part of the story most people get wrong.")
-L('f7', 'd03', "The usual version goes like this. Kodak invented the digital camera, got scared, and hid it. And when digital came, Kodak was left behind.",
+L('f7', 'd03', "The usual version goes like this. Kodak invented the digital camera, got scared, and hid... it. And when digital came, Kodak was left behind.",
   "The usual version goes like this.", "Kodak invented the digital camera, got scared, and hid it.", "And when digital came, Kodak was left behind.")
 L('f7', 'd04', "But look at two thousand four.", "But look at 2004.")
 L('f7', 'd05', "Kodak had been selling simple digital cameras to ordinary families since two thousand one. They were called EasyShare. You set the camera in its dock, pressed one button, and your pictures went to the computer, or to a little printer.",
@@ -198,7 +198,7 @@ L('f3', 'k06', "In March nineteen thirty-two, after two years of a painful illne
 L('f3', 'k07', "Three years later, his company brought out something he had wanted for a very long time. Colour.",
   "Three years later, his company brought out something", "he had wanted for a very long time. Colour.")
 L('f3', 'k08', "Kodachrome. And it was invented, of all people, by two musicians.", "Kodachrome. And it was invented, of all people, by two musicians.")
-L('f3', 'k09', "Leopold Mannes was a concert pianist. Leopold Godowsky Junior was a violinist. They had been chasing colour film since they were schoolboys in New York.",
+L('f3', 'k09', "Leopold Mann-ess was a concert pianist. Leopold Godowsky Junior was a violinist. They had been chasing colour film since they were schoolboys in New York.",
   "Leopold Mannes was a concert pianist.", "Leopold Godowsky Jr. was a violinist.", "They had been chasing colour film", "since they were schoolboys in New York.")
 L('f3', 'k10', "Kodak's research chief, Kenneth Mees, brought them to Rochester in nineteen thirty and gave them a laboratory.",
   "Kodak's research chief, Kenneth Mees, brought them to Rochester", "in 1930 and gave them a laboratory.")
